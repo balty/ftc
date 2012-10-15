@@ -1,8 +1,13 @@
-ftc
-===
-
 First Robitics Code Repository
+===============================
 
-AJ Stubberud <stubberudaj@gmail.com>
-Connor O'Toole <connorot@gmail.com>
-Jake Lee <louisol@gmail.com>
+Contributers
+-------------
+
+- AJ Stubberud - [email][email-aj]
+- Connor O'Toole - [email][email-connor]
+- Jake Lee - [email][email-jake]
+
+[email-aj]: mailto:stubberudaj@gmail.com
+[email-connor]: connorot@gmail.com
+[email-jake]: louisol@gmail.com
