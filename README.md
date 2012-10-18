@@ -9,5 +9,5 @@ Contributers
 - Jake Lee - [email][email-jake]
 
 [email-aj]: mailto:stubberudaj@gmail.com
-[email-connor]: mailto:nnorot@gmail.com
+[email-connor]: mailto:connorot@gmail.com
 [email-jake]: mailto:louisol@gmail.com
