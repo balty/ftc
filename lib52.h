@@ -1,5 +1,5 @@
-#ifndef LIB52_C
-#define LIB52_C
+#ifndef LIB52_H
+#define LIB52_H
 
 #define CONTROLLER_A 01
 #define SLOW_CONSTANT 0.35
