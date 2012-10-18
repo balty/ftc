@@ -6,16 +6,7 @@
 #pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorNormal, openLoop)
 
 #include "JoystickDriver.c"
-
-#define CONTROLLER_A 01
-
-const float SLOW_CONSTANT = 0.35;
-
-typedef struct {
-  int x;
-  int y;
-} joystick_t;
-
+#include "lib52.h"
 
 task main()
 {
