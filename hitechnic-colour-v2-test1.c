@@ -32,6 +32,8 @@ task main () {
   int green = 0;
   int blue = 0;
   int _color = 0;
+  int blackAverage;
+  const int blackTolerance = 10;
   string _tmp;
 
   nxtDisplayCenteredTextLine(0, "HiTechnic");
@@ -39,6 +41,12 @@ task main () {
   nxtDisplayCenteredTextLine(3, "Test 1");
   nxtDisplayCenteredTextLine(5, "Connect sensor");
   nxtDisplayCenteredTextLine(6, "to S1");
+  wait1Msec(2000);
+  eraseDisplay();
+
+  HTCS2readRGB(HTCS2, red, green, blue);
+  blackAverage = (red + green + blue) / 3;
+  nxtDisplayCenteredBigTextLine(1, "%d", blackAverage);
   wait1Msec(2000);
 
   eraseDisplay();
