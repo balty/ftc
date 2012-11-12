@@ -34,6 +34,7 @@ task main () {
   int _color = 0;
   int blackAverage;
   const int blackTolerance = 10;
+  bool isBlack = false;
   string _tmp;
 
   nxtDisplayCenteredTextLine(0, "HiTechnic");
@@ -51,6 +52,7 @@ task main () {
   blackAverage = (red + green + blue) / 3;
   nxtDisplayCenteredTextLine(0, "Black average:");
   nxtDisplayCenteredBigTextLine(1, "%d", blackAverage);
+  nxtDisplayCenteredTextLine(3, "_color = %d", _color);
   wait1Msec(2000);
 
   eraseDisplay();
@@ -73,6 +75,9 @@ task main () {
       wait1Msec(2000);
       StopAllTasks();
     }
+
+    int colorAverage = (red + green + blue) / 3;
+    isBlack = colorAverage <= (blackAverage + blackTolerance);
 
     nxtDisplayCenteredTextLine(0, "Color: %d", _color);
     nxtDisplayCenteredBigTextLine(1, "R  G  B");
