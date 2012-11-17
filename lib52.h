@@ -4,6 +4,8 @@
 #include "JoystickDriver.c"
 
 #define CONTROLLER_A 01
+#define CONTROLLER_RT 05
+#define CONTROLLER_LT 04
 #define SLOW_CONSTANT 0.35
 
 typedef struct {

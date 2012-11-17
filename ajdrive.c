@@ -2,6 +2,8 @@
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     ,               sensorI2CMuxController)
+#pragma config(Motor,  motorA,          topClaw,       tmotorNXT, PIDControl, encoder)
+#pragma config(Motor,  motorB,          botClaw,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorDE,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     motorFG,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    servo1,               tServoStandard)
@@ -37,8 +39,33 @@ task main()
     motor[motorDE] = joysticks[1].y * movementConstant;
     motor[motorFG] = joysticks[0].y * movementConstant;
 
+    // claw arm servo control
+    /*
     int pov = joystick.joy1_TopHat;
+    if (pov == 4)
+    {
+    	rot -= 0.3;
+    }
+    else if (pov == 0)
+    {
+    	rot += 0.3;
+    }
+    if (rot < 0)
+    	rot = 0;
+    servo[servo1] = rot;
+    nxtDisplayCenteredTextLine(2, "rot = %d", ServoValue(servo1));
+    */
 
+    // tread arm control
+    // for some reason, the actual buttons are LT and Y
+    if (joy1Btn(CONTROLLER_RT)) {
+    	motor[topClaw] = 30;
+    	motor[botClaw] = 30;
+    } else if (joy1Btn(CONTROLLER_LT)) {
+      motor[topClaw] = -30;
+      motor[botClaw] = -30;
+    }
+    int pov = joystick.joy1_TopHat;
     if (pov == 4)
     {
     	rot -= 0.3;
