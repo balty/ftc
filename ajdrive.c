@@ -5,7 +5,6 @@
 #pragma config(Motor,  mtr_S1_C2_1,     motorF,        tmotorNormal, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorNormal, openLoop)
 
-#include "JoystickDriver.c"
 #include "lib52.h"
 
 task main()

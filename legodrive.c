@@ -8,5 +8,8 @@
 
 task main()
 {
+	while(true)
+	{
 
+	}
 }

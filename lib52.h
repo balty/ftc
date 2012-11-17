@@ -1,6 +1,8 @@
 #ifndef LIB52_H
 #define LIB52_H
 
+#include "JoystickDriver.c"
+
 #define CONTROLLER_A 01
 #define SLOW_CONSTANT 0.35
 
@@ -9,7 +11,10 @@ typedef struct {
   int y;
 } joystick_t;
 
-joystick_t joysticks[2]; // 0: left		1: right
+// Joystick variables:
+// 0: left		1: right
+// Value out of 100
+joystick_t joysticks[2];
 
 void updateJoysticks() {
 	getJoystickSettings(joystick);
