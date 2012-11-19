@@ -1,11 +1,15 @@
 #pragma config(Hubs,  S1, HTMotor,  none,     none,     none)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
+#pragma config(Hubs,  S3, HTMotor,  none,     none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S3,     ,               sensorI2CMuxController)
 #pragma config(Motor,  motorA,          topClaw,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorB,          botClaw,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorDE,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     motorFG,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S3_C1_1,     motorArm,      tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S3_C1_2,     motorG,        tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    servo1,               tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
@@ -18,65 +22,55 @@
 
 task main()
 {
-	float rot = 0;
   float movementConstant = 1.0;
+  int pov;
+  float wristRotation = 0;
+
+  PlaySound(soundBeepBeep);
 
   while (true)
   {
-    updateJoysticks();
-
-    if (joy1Btn(CONTROLLER_A))
-    {
+		if (joy1Btn(CONTROLLER_A))
       movementConstant = SLOW_CONSTANT;
-    }
     else
-    {
-      movementConstant = 1.0;
-    }
+      movementConstant = .5; // TODO: change
 
     // Motors D and E are actually on the right side - use joysticks[1]
     // F and G are on the left - use joysticks[0]
+    updateJoysticks();
     motor[motorDE] = joysticks[1].y * movementConstant;
     motor[motorFG] = joysticks[0].y * movementConstant;
 
-    // claw arm servo control
-    /*
-    int pov = joystick.joy1_TopHat;
-    if (pov == 4)
-    {
-    	rot -= 0.3;
-    }
-    else if (pov == 0)
-    {
-    	rot += 0.3;
-    }
-    if (rot < 0)
-    	rot = 0;
-    servo[servo1] = rot;
-    nxtDisplayCenteredTextLine(2, "rot = %d", ServoValue(servo1));
-    */
-
-    // tread arm control
-    // for some reason, the actual buttons are LT and Y
-    if (joy1Btn(CONTROLLER_RT)) {
+    // Finger control:
+    if (joy1Btn(CONTROLLER_L2)) {
     	motor[topClaw] = 30;
     	motor[botClaw] = 30;
-    } else if (joy1Btn(CONTROLLER_LT)) {
+    } else if (joy1Btn(CONTROLLER_R2)) {
       motor[topClaw] = -30;
       motor[botClaw] = -30;
+    } else {
+    	motor[topClaw] = 0;
+      motor[botClaw] = 0;
     }
-    int pov = joystick.joy1_TopHat;
-    if (pov == 4)
+
+    // Arm and wrist up/down controls
+    pov = joystick.joy1_TopHat;
+    switch (pov)
     {
-    	rot -= 0.3;
-    }
-    else if (pov == 0)
-    {
-    	rot += 0.3;
-    }
-    if (rot < 0)
-    	rot = 0;
-    servo[servo1] = rot;
-    nxtDisplayCenteredTextLine(2, "rot = %d", ServoValue(servo1));
+    	case DPAD_UP:
+    		motor[motorArm] = 30;
+    		break;
+    	case DPAD_DOWN:
+    		motor[motorArm] = -30;
+    		break;
+    	case DPAD_RIGHT:
+    		wristRotation += 0.3;
+    		break;
+    	case DPAD_LEFT:
+    		wristRotation -= 0.3;
+    		break;
+  	}
+
+  	servo[servo1] = (int) wristRotation;
   }
 }

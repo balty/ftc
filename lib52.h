@@ -3,10 +3,19 @@
 
 #include "JoystickDriver.c"
 
-#define CONTROLLER_A 01
-#define CONTROLLER_RT 05
-#define CONTROLLER_LT 04
+#define CONTROLLER_A 02
+#define CONTROLLER_R1 06
+#define CONTROLLER_R2 08
+#define CONTROLLER_L1 05
+#define CONTROLLER_L2 07
+
+#define DPAD_UP 0
+#define DPAD_DOWN 4
+#define DPAD_LEFT 6
+#define DPAD_RIGHT 2
+
 #define SLOW_CONSTANT 0.35
+#define COLOR_BLACK 0
 
 typedef struct {
   int x;
