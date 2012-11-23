@@ -4,7 +4,7 @@
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     ,               sensorI2CMuxController)
-#pragma config(Motor,  motorA,          topClaw,       tmotorNXT, PIDControl, encoder)
+#pragma config(Motor,  motorA,          topClaw,       tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          botClaw,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorDE,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     motorFG,       tmotorTetrix, openLoop)
@@ -58,10 +58,10 @@ task main()
     switch (pov)
     {
     	case DPAD_UP:
-    		motor[motorArm] = 30;
+    		motor[motorArm] = .30;
     		break;
     	case DPAD_DOWN:
-    		motor[motorArm] = -30;
+    		motor[motorArm] = -.30;
     		break;
     	case DPAD_RIGHT:
     		wristRotation += 0.3;
