@@ -60,4 +60,20 @@ float angleFromGyro(tSensors sensor)
 	return radiansToDegrees(angle);
 }
 
+// Here I will be building a state engine.
+// The purpose of this is to centralize code between
+// autonomous and manual programs
+// You will put the engine run call at the beginning/end of
+// the run loop
+// Parameters will be stored inside the engine struct, which acts
+// as a non-opaque handle
+typedef struct {
+
+} engine_t;
+
+void engine_fire(engine_t *engine)
+{
+
+}
+
 #endif

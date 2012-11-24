@@ -1,9 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  none,     none,     none)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
 #pragma config(Hubs,  S3, HTMotor,  none,     none,     none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S3,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S4,     gyro,           sensorI2CCustom)
 #pragma config(Motor,  motorA,          topClaw,       tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          botClaw,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorDE,       tmotorTetrix, openLoop, reversed)
@@ -25,7 +23,7 @@ task main()
 {
   float movementConstant = 1.0;
   int pov;
-  float wristRotation = 0;
+  int servoStart = ServoValue[servo1];
 
   PlaySound(soundBeepBeep);
 
@@ -74,8 +72,9 @@ task main()
     	*/
   	}
 
-  	servo[servo1] = (int) wristRotation;
+  	// servo[servo1] = (int) wristRotation;
 
-
+  	int angle = angleFromGyro(gyro);
+  	servo[servo1] = servoStart + angle;
   }
 }
