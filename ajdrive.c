@@ -23,7 +23,9 @@ task main()
 {
   float movementConstant = 1.0;
   int pov;
-  int servoStart = ServoValue[servo1];
+
+  servo[servo1] = 0;
+  wait1Msec(2000);
 
   PlaySound(soundBeepBeep);
 
@@ -75,6 +77,6 @@ task main()
   	// servo[servo1] = (int) wristRotation;
 
   	int angle = angleFromGyro(gyro);
-  	servo[servo1] = servoStart + angle;
+  	servo[servo1] = (0 + angle);
   }
 }
