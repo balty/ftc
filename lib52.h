@@ -2,8 +2,10 @@
 #define LIB52_H
 
 #include "JoystickDriver.c"
+#include "drivers/hitechnic-accelerometer.h"
 
 #define CONTROLLER_A 02
+#define CONTROLLER_X 01
 #define CONTROLLER_R1 06
 #define CONTROLLER_R2 08
 #define CONTROLLER_L1 05
@@ -16,6 +18,9 @@
 
 #define SLOW_CONSTANT 0.35
 #define COLOR_BLACK 0
+
+#define degreesToRadians(x) (x * PI / 180)
+#define radiansToDegrees(x) (x * (float) 180 / PI)
 
 typedef struct {
   int x;
@@ -41,6 +46,18 @@ void updateJoysticks() {
   	if (abs(joysticks[i].x) < 5)
   		joysticks[i].x = 0;
   }
+}
+
+float angleFromGyro(tSensors sensor)
+// See diagrams: angle = arctan(z/x),
+// where gyro sensor faces up, with white part
+// is furthest from locus of movement
+{
+	int x, y, z;
+	float angle; // in radians
+	HTACreadAllAxes(sensor, x, y, z);
+	angle = atan((float) z / (float) x);
+	return radiansToDegrees(angle);
 }
 
 #endif
