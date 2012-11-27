@@ -73,7 +73,6 @@ void popBottomEvent(const event_t *stack, event_t *retVal)
 	}
 }
 
-// TODO: events are returned in reverse order; this is BAD
 void pollEvent(eventengine_t *engine, event_t *event) {
 	bool foundEvent = false;
 	event_t newEvent; // the event to be pushed onto the stack
