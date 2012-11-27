@@ -36,40 +36,44 @@ bool buttonState[13] = {
 int joy1State[2] = { 0, 0 };
 event_t eventStack[100];
 
+int eventCount(event_t *stack)
+{
+	for (int i = 0; i < 100; i++)
+	{
+		if (stack[i].type == 0
+			|| stack[i].type == EVENT_TYPE_NONE)
+			return i;
+	}
+
+	return 100;
+}
+
 void pushEvent(const event_t &event, event_t *stack)
 {
-	// Get the first available index
-	int i = 0;
-	for (;i < 100; i++) {
-		if (stack[i].type == EVENT_TYPE_NONE)
-			break;
-	}
+	int count = eventCount(stack);
 
-	stack[i] = event;
+	stack[count] = event;
 }
 
-void popEvent(const event_t *stack, event_t *retVal)
+// Pops from the bottom of the stack, not the top
+void popBottomEvent(const event_t *stack, event_t *retVal)
 {
-	// Get the first available index
+	int count = eventCount(stack);
+
+	*retVal = stack[0];
+
+	// Move the rest of the events down
 	int i = 0;
-	for (;i < 100; i++) {
-		if (stack[i].type == EVENT_TYPE_NONE)
-			break;
+	int j = 1;
+	while (i < count - 1)
+	{
+		stack[i] = stack[j];
+		i++;
+		j++;
 	}
-
-	if (i == 0) {
-		PlaySound(soundException);
-		return;
-	}
-
-	retVal->type = stack[i - 1].type;
-	retVal->data = stack[i - 1].data;
-
-	stack[i - 1].type = EVENT_TYPE_NONE;
-	stack[i - 1].data = 0;
 }
 
-// TODO: implement stack usage & waiting
+// TODO: events are returned in reverse order; this is BAD
 void pollEvent(eventengine_t *engine, event_t *event) {
 	bool foundEvent = false;
 	event_t newEvent; // the event to be pushed onto the stack
@@ -115,7 +119,7 @@ void pollEvent(eventengine_t *engine, event_t *event) {
 
 	if (foundEvent) {
 		// Find the last event on the stack and return it
-		popEvent(eventStack, event);
+		popBottomEvent(eventStack, event);
 		return;
 	} else {
 		if (engine->eventNone) {
