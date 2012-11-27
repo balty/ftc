@@ -5,8 +5,6 @@
 
 #include "event.h"
 
-const int BLACK_AVERAGE = 100;
-
 task main()
 {
 

@@ -47,6 +47,20 @@ void pollEvent(event_t *event) {
 			}
 		}
 	}
+
+	joystick_t joysticks[2];
+	updateJoysticks(joysticks);
+	if (joy1State[0] != joysticks[0].x) {
+		joy1State[0] = joysticks[0].x;
+		event->type = EVENT_TYPE_JOYSTICK_1_X_CHANGE;
+		event->data = joysticks[0].x;
+		return;
+	} else if (joy1State[1] != joysticks[0].y) {
+		joy1State[1] = joysticks[0].y;
+		event->type = EVENT_TYPE_JOYSTICK_1_Y_CHANGE;
+		event->data = joysticks[0].y;
+		return;
+	}
 }
 
 #endif // EVENT_H

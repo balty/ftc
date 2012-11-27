@@ -35,13 +35,12 @@ float angleFromGyro(tSensors sensor)
 	return radiansToDegrees(angle);
 }
 
-void updateJoysticks() {
-	typedef struct {
+typedef struct {
 		int x;
 		int y;
-	} joystick_t;
-	joystick_t joysticks[2];
+} joystick_t;
 
+void updateJoysticks(joystick_t *joysticks) {
 	getJoystickSettings(joystick);
 
 	joysticks[0].x = joystick.joy1_x1 * 100.0 / 128.0;
