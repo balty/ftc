@@ -73,60 +73,64 @@ void popBottomEvent(const event_t *stack, event_t *retVal)
 	}
 }
 
-void pollEvent(eventengine_t *engine, event_t *event) {
-	bool foundEvent = false;
-	event_t newEvent; // the event to be pushed onto the stack
+bool pollEvent(eventengine_t *engine, event_t *event) {
+	// I have to do this loop because the C
+	// implementation does not allow recursion
+	while (true) {
+		bool foundEvent = false;
+		event_t newEvent; // the event to be pushed onto the stack
 
-	for (int i = 0; i < sizeof(buttonState) / sizeof(bool); i++)
-		// Button press checking here
-		// TODO: Do I need to shift each button code +1?
-	{
-		if (joy1Btn(i)) {
-			if (!buttonState[i]) {
-				buttonState[i] = true;
-				newEvent.type = EVENT_TYPE_BUTTON_DOWN;
-				newEvent.data = i;
-				foundEvent = true;
-				pushEvent(newEvent, eventStack);
-			}
-		} else {
-			if (buttonState[i]) {
-				buttonState[i] = false;
-				newEvent.type = EVENT_TYPE_BUTTON_UP;
-				newEvent.data = i;
-				foundEvent = true;
-				pushEvent(newEvent, eventStack);
+		for (int i = 0; i < sizeof(buttonState) / sizeof(bool); i++)
+			// Button press checking here
+			// TODO: Do I need to shift each button code +1?
+		{
+			if (joy1Btn(i)) {
+				if (!buttonState[i]) {
+					buttonState[i] = true;
+					newEvent.type = EVENT_TYPE_BUTTON_DOWN;
+					newEvent.data = i;
+					foundEvent = true;
+					pushEvent(newEvent, eventStack);
+				}
+			} else {
+				if (buttonState[i]) {
+					buttonState[i] = false;
+					newEvent.type = EVENT_TYPE_BUTTON_UP;
+					newEvent.data = i;
+					foundEvent = true;
+					pushEvent(newEvent, eventStack);
+				}
 			}
 		}
-	}
 
-	joystick_t joysticks[2];
-	updateJoysticks(joysticks);
-	if (joy1State[0] != joysticks[0].x) {
-		joy1State[0] = joysticks[0].x;
-		newEvent.type = EVENT_TYPE_JOYSTICK_1_X_CHANGE;
-		newEvent.data = joysticks[0].x;
-		foundEvent = true;
-		pushEvent(newEvent, eventStack);
-	} else if (joy1State[1] != joysticks[0].y) {
-		joy1State[1] = joysticks[0].y;
-		newEvent.type = EVENT_TYPE_JOYSTICK_1_Y_CHANGE;
-		newEvent.data = joysticks[0].y;
-		foundEvent = true;
-		pushEvent(newEvent, eventStack);
-	}
+		joystick_t joysticks[2];
+		updateJoysticks(joysticks);
+		if (joy1State[0] != joysticks[0].x) {
+			joy1State[0] = joysticks[0].x;
+			newEvent.type = EVENT_TYPE_JOYSTICK_1_X_CHANGE;
+			newEvent.data = joysticks[0].x;
+			foundEvent = true;
+			pushEvent(newEvent, eventStack);
+		} else if (joy1State[1] != joysticks[0].y) {
+			joy1State[1] = joysticks[0].y;
+			newEvent.type = EVENT_TYPE_JOYSTICK_1_Y_CHANGE;
+			newEvent.data = joysticks[0].y;
+			foundEvent = true;
+			pushEvent(newEvent, eventStack);
+		}
 
-	if (foundEvent) {
-		// Find the last event on the stack and return it
-		popBottomEvent(eventStack, event);
-		return;
-	} else {
-		if (engine->eventNone) {
-			event->type = EVENT_TYPE_NONE;
-			event->data = 0;
-			return;
+		if (foundEvent) {
+			// Find the last event on the stack and return it
+			popBottomEvent(eventStack, event);
+			return true;
 		} else {
-			pollEvent(engine, event);
+			if (engine->eventNone) {
+				event->type = EVENT_TYPE_NONE;
+				event->data = 0;
+				return true;
+			} else {
+				continue;
+			}
 		}
 	}
 }
