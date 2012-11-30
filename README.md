@@ -3,7 +3,7 @@ First Robitics Code Repository
 
 Announcements
 -------------
-Attention all programmers: the main branch is now deprecated.  This means that now significant development should take place there.  You should instead fork the "event-driver" branch into a new one and make your changes there.
+Attention all programmers: the main branch is now deprecated.  This means that no significant development should take place there.  You should instead fork the "event-driver" branch into a new one and make your changes there.
 
 Contributers
 -------------
