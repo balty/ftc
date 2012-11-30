@@ -22,11 +22,10 @@
 #define degreesToRadians(x) (x * PI / 180)
 #define radiansToDegrees(x) (x * (float) 180 / PI)
 
-
 float angleFromGyro(tSensors sensor)
 // See diagrams: angle = arctan(z/x),
 // where gyro sensor faces up, with white part
-// is furthest from locus of movement
+// furthest from locus of movement
 {
 	int x, y, z;
 	float angle; // in radians
@@ -35,26 +34,56 @@ float angleFromGyro(tSensors sensor)
 	return radiansToDegrees(angle);
 }
 
-typedef struct {
-		int x;
-		int y;
-} joystick_t;
-
-void updateJoysticks(joystick_t *joysticks) {
+int controllerValue(int controller, int joy, int axis)
+// Parameters:
+// - controller: controller 1 or 2
+// - joy: joystick 1 or 2
+// - axis: 1 = x, 2 = y
+{
+	int val = 0;
 	getJoystickSettings(joystick);
 
-	joysticks[0].x = joystick.joy1_x1 * 100.0 / 128.0;
-  joysticks[0].y = joystick.joy1_y1 * 100.0 / 128.0;
-  joysticks[1].x = joystick.joy1_x2 * 100.0 / 128.0;
-  joysticks[1].y = joystick.joy1_y2 * 100.0 / 128.0;
+	if (controller == 1)
+	{
+		if (joy == 1) {
+			if (axis == 1)
+				val = joystick.joy1_x1;
+			else
+				val = joystick.joy1_y1;
+		}
+		else {
+			if (axis == 2)
+				val = joystick.joy1_x2;
+			else
+				val = joystick.joy1_y2;
+		}
+	}
+	else if (controller == 2)
+	{
+		if (joy == 1) {
+			if (axis == 1)
+				val = joystick.joy2_x1;
+			else
+				val = joystick.joy2_y1;
+		}
+		else {
+			if (axis == 1)
+				val = joystick.joy2_x2;
+			else
+				val = joystick.joy2_y2;
+		}
+	}
+	else
+	{
+		PlaySound(soundException);
+		StopAllTasks();
+	}
 
-  for (int i = 0; i < 2; i++)
-  {
-  	if (abs(joysticks[i].y) < 5)
-  		joysticks[i].y = 0;
-  	if (abs(joysticks[i].x) < 5)
-  		joysticks[i].x = 0;
-  }
+	if (val > -5
+		&& val < 5)
+		val = 0;
+
+	return val;
 }
 
 #endif // UTIL_H
