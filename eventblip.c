@@ -13,8 +13,6 @@ task main()
 	while (true) {
 		pollEvent(&engine, &event);
 
-		// Problem: we arent receiving the event code properly
-		// probably problem with the stack
 		switch (event.type)
 		{
 			case EVENT_TYPE_BUTTON_DOWN:

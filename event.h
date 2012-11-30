@@ -87,13 +87,15 @@ void popBottomEvent(const event_t *stack, event_t *retVal)
 
 	retVal->type = stack[0].type;
 	retVal->data = stack[0].data;
+	memset(&(stack[0]), 0, sizeof(event_t));
 
 	// Move the rest of the events down
 	int i = 0;
 	int j = 1;
-	while (j < count)
+	while (i < count)
 	{
 		stack[i] = stack[j];
+		memset(&(stack[j]), 0, sizeof(event_t));
 		i++;
 		j++;
 	}
