@@ -79,11 +79,11 @@ int controllerValue(int controller, int joy, int axis)
 		StopAllTasks();
 	}
 
-	val *= 100.0 / 128.0;
+	val = (float) val * 100.0 / 128.0;
 
 	if (val > -5
 		&& val < 5)
-		val = 0;
+	val = 0;
 
 	return val;
 }
