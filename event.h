@@ -46,8 +46,10 @@
 // convenience and if changed may result in some code being broken.
 enum {
 	EVENT_TYPE_NONE = 0,
-	EVENT_TYPE_BUTTON_DOWN = 1,
-	EVENT_TYPE_BUTTON_UP = 2,
+	EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN = 1,
+	EVENT_TYPE_CONTROLLER_1_BUTTON_UP = 2,
+	EVENT_TYPE_CONTROLLER_2_BUTTON_DOWN = 11,
+	EVENT_TYPE_CONTROLLER_2_BUTTON_UP = 12,
 	EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_X = 3,
 	EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_Y = 4,
 	EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_X = 5,
@@ -95,23 +97,34 @@ typedef struct {
 
 // This is a private array needed by the pollEvent
 // cycle to keep track of button states
-bool buttonState[13] = {
+bool buttonState1[13] = {
 	false, false, false,
 	false, false, false,
 	false, false, false,
 	false, false, false,
 	false
 };
+bool buttonState2[13] = {
+	false, false, false,
+	false, false, false,
+	false, false, false,
+	false, false, false,
+	false
+};
+
+// state for controller 1
+// format: [joystick][axis]
 int c1State[2][2] = {
 	0, 0,
 	0, 0
-}; // state for controller 1
+};
+
+// state for controller 2
 // format: [joystick][axis]
 int c2State[2][2] = {
 	0, 0,
 	0, 0
-}; // state for controller 2
-// format: [joystick][axis]
+};
 
 void eventengine_init(eventengine_t *engine)
 // This function initializes an engine so
@@ -168,27 +181,56 @@ bool pollEvent(eventengine_t *engine, event_t *event) {
 		bool foundEvent = false;
 		event_t newEvent; // temp event to be copied onto the stack
 
-		for (int i = 0; i < sizeof(buttonState) / sizeof(bool); i++)
-			// Button press checking here
-		// TODO: Do I need to shift each button code +1?
-		{
-			if (joy1Btn(i)) {
-				if (!buttonState[i]) {
-					buttonState[i] = true;
-					newEvent.type = EVENT_TYPE_BUTTON_DOWN;
-					newEvent.data = i;
-					foundEvent = true;
-					pushEvent(newEvent, engine->eventStack);
+		if (engine->controller1) {
+			for (int i = 0; i < sizeof(buttonState1) / sizeof(bool); i++)
+				// Button press checking here
+			// TODO: Do I need to shift each button code +1?
+			{
+				if (joy1Btn(i)) {
+					if (!buttonState1[i]) {
+						buttonState1[i] = true;
+						newEvent.type = EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN;
+						newEvent.data = i;
+						foundEvent = true;
+						pushEvent(newEvent, engine->eventStack);
 
+					}
+					} else {
+					if (buttonState1[i]) {
+						buttonState1[i] = false;
+						newEvent.type = EVENT_TYPE_CONTROLLER_1_BUTTON_UP;
+						newEvent.data = i;
+						foundEvent = true;
+						pushEvent(newEvent, engine->eventStack);
+
+					}
 				}
-				} else {
-				if (buttonState[i]) {
-					buttonState[i] = false;
-					newEvent.type = EVENT_TYPE_BUTTON_UP;
-					newEvent.data = i;
-					foundEvent = true;
-					pushEvent(newEvent, engine->eventStack);
+			}
+		}
 
+		if (engine->controller2) {
+			for (int i = 0; i < sizeof(buttonState2) / sizeof(bool); i++)
+				// Button press checking here
+			// TODO: Do I need to shift each button code +1?
+			{
+				if (joy2Btn(i)) {
+					if (!buttonState2[i]) {
+						buttonState2[i] = true;
+						newEvent.type = EVENT_TYPE_CONTROLLER_2_BUTTON_DOWN;
+						newEvent.data = i;
+						foundEvent = true;
+						pushEvent(newEvent, engine->eventStack);
+
+					}
+					} else {
+					if (buttonState2[i]) {
+						buttonState2[i] = false;
+						newEvent.type = EVENT_TYPE_CONTROLLER_2_BUTTON_UP;
+						newEvent.data = i;
+						foundEvent = true;
+						pushEvent(newEvent, engine->eventStack);
+
+					}
 				}
 			}
 		}

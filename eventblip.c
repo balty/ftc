@@ -18,17 +18,17 @@ task main()
 		nxtDisplayTextLine(0, "%d", event.type);
 		switch (event.type)
 		{
-		case EVENT_TYPE_BUTTON_DOWN:
+		case EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN:
 			PlaySound(soundDownwardTones);
 			break;
-		case EVENT_TYPE_BUTTON_UP:
+		case EVENT_TYPE_CONTROLLER_1_BUTTON_UP:
 			PlaySound(soundUpwardTones);
 			break;
 		case EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_X:
-			PlaySound(soundBeepBeep);
+			PlaySound(soundBlip);
 			break;
 		case EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_X:
-			PlaySound(soundLowBuzz);
+			//PlaySound(soundLowBuzz);
 			break;
 		default:
 
