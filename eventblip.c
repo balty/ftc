@@ -1,3 +1,6 @@
+// The purpose of this file is to test the event
+// engine using audio output
+
 #include "event.h"
 
 task main()

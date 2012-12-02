@@ -23,6 +23,15 @@
 #define radiansToDegrees(x) (x * (float) 180 / PI)
 
 float angleFromGyro(tSensors sensor)
+// Function to grab the angle of the
+// acceleration sensor, presumable mounted
+// on the arm.
+// Return Value:
+// - the angle, in degrees, of the arm from the horizontal
+// Parameters:
+// - sensor: a pointer to the sensor to read the
+//           acceleration values from
+//
 // See diagrams: angle = arctan(z/x),
 // where gyro sensor faces up, with white part
 // furthest from locus of movement
@@ -35,6 +44,9 @@ float angleFromGyro(tSensors sensor)
 }
 
 int controllerValue(int controller, int joy, int axis)
+// Grab a joystick value from the controller state
+// Return Value:
+// - the requested state value
 // Parameters:
 // - controller: controller 1 or 2
 // - joy: joystick 1 or 2

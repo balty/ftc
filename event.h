@@ -1,8 +1,49 @@
+// This file houses the logic for the event engine
+// To create and use an instance of the event engine:
+// - eventengine_t engine;
+// - event_t event;
+// - eventengine_init(&engine);
+// - (set engine parameters using member variables)
+// - pollEvent(&engine, &event);
+//
+// Here is a rundown of the code above:
+// eventengine_t ---- the "handle" of an engine instance.
+//                    You also use this struct to control the
+//                    runtime of the engine through member
+//                    variables (options).
+//                    You can have any number of these in
+//                    an application.
+// event_t ---------- the "handle" of an event that the engine
+//                    will return.  This struct contains the type
+//                    and value of the event.
+// eventengine_init - this initializes an engine structure to all
+//                    zeros to eliminate any garbage data that
+//                    can interfere with the cycle
+// ...parameters... - Here is where you set the options for the engine
+//                    Look at the documentation of the eventengine_t
+//                    struct if you want to see a list of options and
+//                    what each one means.  For example:
+//                        engine.eventNone = true;
+//                            this tells the engine that it is okay
+//                            to return an empty event instead of waiting
+//                            for something to happen
+// pollEvent(...) --- This initiates the engine logic.  The engine will
+//                    search for events based on the parameters that
+//                    you set.  If engine.eventNone == true, the engine
+//                    will not wait for an event even if nothing has happened
+//                    since the last call; it will return an empty event.
+//                    This function will return the detected event.
+
+
 #ifndef EVENT_H
 #define EVENT_H
 
 #include "util.h"
 
+// This enumeration houses the numerical codes for all
+// the different types of events.  Notice that EVENT_TYPE_NONE
+// is 0.  Please do not ever change this, it allows for
+// convenience and if changed may result in some code being broken.
 enum {
 	EVENT_TYPE_NONE = 0,
 	EVENT_TYPE_BUTTON_DOWN = 1,
@@ -17,6 +58,13 @@ enum {
 	EVENT_TYPE_CONTROLLER_2_JOYSTICK_2_CHANGE_Y = 10,
 };
 
+// This is the structure for a raw event
+// Members:
+// - type: the numerical type of the event.
+//         see the above EVENT_TYPE enumeration
+// - data: the value associated with the event.
+//         Example: you move the joystick to the top.
+//         event.data will contain the value '100.'
 typedef struct {
 	short type;
 	int data;
@@ -25,10 +73,21 @@ typedef struct {
 // TODO: move all state information into here
 // This struct contains the options for
 // the event engine
+// Member variables:
+// - eventStack: contains the stack of events that
+//               were detected.  This is for internal
+//               use only and should not be changed
+//               by the program.
+// - eventNone: if set to 'true,' pollEvent will not wait
+//              for another event to occur if it could not
+//              find one; it will simply return an empty
+//              event.
+// - controller1: if set to 'true,' pollEvent will probe for
+//                joystick and button events on controller 1
+// - controller2: if set to 'true,' pollEvent will probe for
+//                joystick and button events on controller 2
 typedef struct {
 	event_t eventStack[100];
-	// If true, pollEvent will not hang when
-	// there is no event to push
 	bool eventNone;
 	bool controller1;
 	bool controller2;
