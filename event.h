@@ -151,7 +151,9 @@ int eventCount(event_t *stack)
 void pushEvent(const event_t &event, event_t *stack)
 {
 	int count = eventCount(stack);
-	stack[count] = event;
+	stack[count].type = event.type;
+	stack[count].data = event.data;
+	nxtDisplayTextLine(2, "%d", stack[count].data);
 }
 
 void pushEvent_replace(const event_t &event, event_t *stack)
@@ -248,7 +250,7 @@ bool pollEvent(eventengine_t *engine, event_t *event)
 
 		if (engine->controller2) {
 			for (int i = 0; i < sizeof(buttonState2) / sizeof(bool); i++)
-				// Button press checking here
+			// Button press checking here
 			// TODO: Do I need to shift each button code +1?
 			{
 				if (joy2Btn(i)) {

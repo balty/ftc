@@ -95,8 +95,8 @@ int controllerValue(int controller, int joy, int axis)
 
 	val = (float) val * 100.0 / 128.0;
 
-	if (val > -5
-		&& val < 5)
+	if (val > -10
+		&& val < 10)
 	val = 0;
 
 	return val;
