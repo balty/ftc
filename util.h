@@ -58,16 +58,18 @@ int controllerValue(int controller, int joy, int axis)
 	if (controller == 1)
 	{
 		if (joy == 1) {
-			if (axis == 1)
+			if (axis == 1) {
 				val = joystick.joy1_x1;
-			else
+			} else {
 				val = joystick.joy1_y1;
+			}
 		}
 		else {
-			if (axis == 2)
+			if (axis == 1) {
 				val = joystick.joy1_x2;
-			else
+			} else {
 				val = joystick.joy1_y2;
+			}
 		}
 	}
 	else if (controller == 2)

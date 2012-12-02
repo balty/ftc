@@ -115,15 +115,15 @@ bool buttonState2[13] = {
 // state for controller 1
 // format: [joystick][axis]
 int c1State[2][2] = {
-	0, 0,
-	0, 0
+	1, 1,
+	1, 1
 };
 
 // state for controller 2
 // format: [joystick][axis]
 int c2State[2][2] = {
-	0, 0,
-	0, 0
+	1, 1,
+	1, 1
 };
 
 void eventengine_init(eventengine_t *engine)
@@ -237,6 +237,8 @@ bool pollEvent(eventengine_t *engine, event_t *event) {
 
 		// Joystick events
 		{
+			// [joystick][axis]
+		  // set to '1' so I can debug it
 			int c1Now[2][2] = { 0, 0, 0, 0 };
 			int c2Now[2][2] = { 0, 0, 0, 0 };
 
@@ -266,16 +268,18 @@ bool pollEvent(eventengine_t *engine, event_t *event) {
 						foundEvent = true;
 
 						if (joy == 0) {
-							if (axis == 0)
+							if (axis == 0) {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_X;
-							else
+							} else {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_Y;
+							}
 						}
 						else { // (joy == 1)
-							if (axis == 0)
+							if (axis == 0) {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_X;
-							else
+							} else {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_Y;
+							}
 						}
 
 						c1State[joy][axis] = c1Now[joy][axis];
