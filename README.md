@@ -7,7 +7,8 @@ Branches
 
 Tags
 --------
-- event-driver-a1: "Event Driver Alpha 1" - the first "working" revision of the event interface with only controller events.  This is meant to be an initial demo and skeleton for 'pollEvent().'
+- event-driver-a1: "Event Driver Alpha 1" - the first "working" revision of the event interface with only controller events.  This is meant to be an initial demo and skeleton for 'pollEvent().' [unstable]
+- event-driver-a2: "Event Driver Alpha 2" - just event-driver-a1 with bugfixes.  The featureset is much more stable.  No new features. [unstable]
 
 Contributers
 -------------
