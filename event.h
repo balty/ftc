@@ -196,7 +196,23 @@ void popBottomEvent(const event_t *stack, event_t *retVal)
 	}
 }
 
-bool pollEvent(eventengine_t *engine, event_t *event) {
+bool pollEvent(eventengine_t *engine, event_t *event)
+// This is pretty much the main function of the engine :)
+// It reads the options from the 'engine' parameter and then
+// searches for events.  It will always return events in the
+// order in which it receives them.  Note that not all joystick
+// events will be reported.  This is because the fingers are capable
+// of generating far too many (much more than can be consumed by the program).
+// Instead of recording each joystick move, the function just finds the most
+// recent joystick event of the same type and then modifies the 'data'
+// member field.
+//
+// Return Value:
+// - DISCARD THIS RETURN VALUE!  I put it here b/c I may use it in the future
+// Parameters:
+// - engine: a pointer to the eventengine_t struct containing the engine options
+// - event: a pointer to the event_t struct whose data we will be modifying
+{
 	// I have to do this loop because the C
 	// implementation does not allow recursion
 	while (true) {

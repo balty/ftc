@@ -28,7 +28,7 @@ task main()
 			PlaySound(soundBlip);
 			break;
 		case EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_X:
-			//PlaySound(soundLowBuzz);
+			PlaySound(soundLowBuzz);
 			break;
 		default:
 
