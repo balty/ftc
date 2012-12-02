@@ -40,6 +40,8 @@
 
 #include "util.h"
 
+#define MAX_EVENTS 200
+
 // This enumeration houses the numerical codes for all
 // the different types of events.  Notice that EVENT_TYPE_NONE
 // is 0.  Please do not ever change this, it allows for
@@ -89,7 +91,7 @@ typedef struct {
 // - controller2: if set to 'true,' pollEvent will probe for
 //                joystick and button events on controller 2
 typedef struct {
-	event_t eventStack[100];
+	event_t eventStack[MAX_EVENTS];
 	bool eventNone;
 	bool controller1;
 	bool controller2;
@@ -143,14 +145,34 @@ int eventCount(event_t *stack)
 		return i;
 	}
 
-	return 100;
+	return MAX_EVENTS;
 }
 
 void pushEvent(const event_t &event, event_t *stack)
 {
 	int count = eventCount(stack);
-
 	stack[count] = event;
+}
+
+void pushEvent_replace(const event_t &event, event_t *stack)
+// If the event is a joystick event, we can't just shove
+// it onto the stack; they will be produced faster than
+// they can be consumed.
+// Instead, we need to search for the last one and change
+// the data member variable
+{
+	// Just search for the last joy event with the same type
+	int count = eventCount(stack);
+	for (int i = count - 1; i >= 0; i++)
+	{
+		if (stack[i].type == event.type) {
+			stack[i].data = event.data;
+			return;
+		}
+	}
+
+	// If we didn't find one, just push as normal
+	pushEvent(event, stack);
 }
 
 // Pops from the bottom of the stack, not the top
@@ -284,7 +306,7 @@ bool pollEvent(eventengine_t *engine, event_t *event) {
 
 						c1State[joy][axis] = c1Now[joy][axis];
 						newEvent.data = c1Now[joy][axis];
-						pushEvent(newEvent, engine->eventStack);
+						pushEvent_replace(newEvent, engine->eventStack);
 					}
 				}
 			}
@@ -313,7 +335,7 @@ bool pollEvent(eventengine_t *engine, event_t *event) {
 
 					c2State[joy][axis] = c2Now[joy][axis];
 					newEvent.data = c2Now[joy][axis];
-					pushEvent(newEvent, engine->eventStack);
+					pushEvent_replace(newEvent, engine->eventStack);
 				}
 			}
 		}
