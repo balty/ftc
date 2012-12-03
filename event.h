@@ -92,7 +92,6 @@ struct {
 //                joystick and button events on controller 1
 // - controller2: if set to 'true,' pollEvent will probe for
 //                joystick and button events on controller 2
-
 typedef struct {
 	event_t eventPool[MAX_EVENTS];
 	event_t *first; // pointer to the current first event
@@ -102,38 +101,29 @@ typedef struct {
 	bool controller2;
 } eventengine_t;
 
-// This is a private array needed by the pollEvent
-// cycle to keep track of button states
-bool buttonState1[13] = {
-	true, false, false,
-	false, false, false,
-	false, false, false,
-	false, false, false,
-	false
-};
-bool buttonState2[13] = {
-	false, false, false,
-	false, false, false,
-	false, false, false,
-	false, false, false,
-	false
-};
 
-// state for controller 1
-// format: [joystick][axis]
-int c1State[2][2] = {
-	1, 1,
-	1, 1
-};
-
-// state for controller 2
-// format: [joystick][axis]
-int c2State[2][2] = {
-	1, 1,
-	1, 1
-};
+// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// Here lies the code for the "event queue"
+// Here is how it works:
+// eventengine_init: this zero's out all events in the pool and
+//                   links them all together in a chain, with the
+//                   last one being linked to NULL
+// adding an event: find the first unused event (usually not the
+//                  last one) and modify the values inside
+// removing an event: update the pointer to the list start to
+//                    point to the second event.  Set the consumed
+//                    event's 'next' field to NULL so that when put
+//                    on the back of the queue, it will be identified
+//                    as the last.  Set the type to zero so that it
+//                    will be identified as empty.  Add the consumed
+//                    event to the end of the list.
 
 void eventengine_init(eventengine_t *engine)
+// Initialize the event engine so that we don't have a bunch
+// of garbage values that mess things up.  This also links
+// the events in the engine's event pool together in a chain
 {
 	// Zero-out all member variables of the engine
 	engine->eventNone = false;
@@ -165,6 +155,9 @@ event_t *lastEvent(eventengine_t *engine)
 }
 
 event_t *lastUsedEvent(eventengine_t *engine)
+// Return Value: the last event that contains a valid type code
+//    If the return value is NULL, that means that the last unused
+//    event is engine->first, which means that there are no events
 {
 	event_t *ret = engine->first;
 	while (ret->type != 0)
@@ -180,6 +173,11 @@ event_t *lastUsedEvent(eventengine_t *engine)
 }
 
 void addEvent(eventengine_t *engine, const event_t &event)
+// Add an event to the list.
+// Here is how it works:
+//     It finds the first unused event.  If the function 'lastUsedEvent()'
+//     returns NULL, then the first unused event is the engine->first pointer.
+//     It then simply modifies the values in the first unused event.
 {
 	// Find the first unused event and copy values into there
 	// Note that there is no segfault guard
@@ -194,11 +192,34 @@ void addEvent(eventengine_t *engine, const event_t &event)
 }
 
 void addEvent_replace(eventengine_t *engine, const event_t &event)
+// This function is used for joystick events.  Instead of inserting
+// a brand-new event onto the stack, we have to see if there is
+// another joystick event there because joystick events are
+// generated much faster than they can be consumed.
 {
+	// search for an event of the same type in the queue
+	// we don't have to search all the events, stop when you
+	// hit one with a type of 0 because they will all be the same
+	// afterwards
+	for (event_t *ev = engine->first;
+		ev->type != 0;
+		ev = ev->next)
+	{
+		if (ev->type == event.type) {
+			ev->data = event.type;
+			break;
+		}
+	}
 
+	// If we got here, that means that we couldn't find an event of
+	// the same type
+	addEvent(engine, event);
 }
 
 void consumeEvent(eventengine_t *engine, event_t *ret)
+// This function deletes the first event from the list
+// and recycles it to the back of the list, returning the
+// values of the deleted event inside 'ret'
 {
 
 	// Consume the event, destroying it and adding it
@@ -218,7 +239,46 @@ void consumeEvent(eventengine_t *engine, event_t *ret)
 	nxtDisplayTextLine(3, "consume:%d", ret->type);
 }
 
-bool pollEvent(eventengine_t *engine, event_t *event)
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// Here lies the code for the pollEvent cycle, including
+// state variables.
+
+// This is a private array needed by the pollEvent
+// cycle to keep track of button states
+bool buttonState1[13] = {
+	true, false, false,
+	false, false, false,
+	false, false, false,
+	false, false, false,
+	false
+};
+
+bool buttonState2[13] = {
+	false, false, false,
+	false, false, false,
+	false, false, false,
+	false, false, false,
+	false
+};
+
+// state for controller 1
+// format: [joystick][axis]
+int c1State[2][2] = {
+	1, 1,
+	1, 1
+};
+
+// state for controller 2
+// format: [joystick][axis]
+int c2State[2][2] = {
+	1, 1,
+	1, 1
+};
+
+void pollEvent(eventengine_t *engine, event_t *event)
 // This is pretty much the main function of the engine :)
 // It reads the options from the 'engine' parameter and then
 // searches for events.  It will always return events in the
@@ -389,16 +449,21 @@ bool pollEvent(eventengine_t *engine, event_t *event)
 			}
 		}
 
-		if (foundEvent) {
-			// Find the last event on the stack and return it
+		if (lastUsedEvent(engine) != NULL)
+		{
+			// This means we can return an event
 			consumeEvent(engine, event);
-			return true;
-			} else {
+			break;
+		}
+		else
+		{
+			// There are no events to return, now decide what to do
 			if (engine->eventNone) {
 				event->type = EVENT_TYPE_NONE;
 				event->data = 0;
-				return true;
-				} else {
+				break;
+			}
+			else {
 				continue;
 			}
 		}
