@@ -9,11 +9,22 @@ task main()
 	event_t event;
 
 	eventengine_init(engine);
-	engine.eventNone = false;
+	engine.eventNone = true;
 	engine.controller1 = true;
 	engine.controller2 = false;
 
 	while (true) {
+		int count = 0;
+		ClearTimer(T1);
+		while (time1[T1] < 1000) {
+			pollEvent(&engine, &event);
+			count++;
+		}
+		nxtDisplayTextLine(0, "eps:%d", count);
+		count = 0;
+	}
+
+	/*while (true) {
 		pollEvent(&engine, &event);
 		nxtDisplayTextLine(0, "%d", event.type);
 		switch (event.type)
@@ -34,5 +45,5 @@ task main()
 
 			break;
 		}
-	}
+	}*/
 }

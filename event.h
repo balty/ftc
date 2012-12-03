@@ -40,7 +40,7 @@
 
 #include "util.h"
 
-#define MAX_EVENTS 200
+#define MAX_EVENTS 100
 
 // This enumeration houses the numerical codes for all
 // the different types of events.  Notice that EVENT_TYPE_NONE
@@ -69,9 +69,11 @@ enum {
 // - data: the value associated with the event.
 //         Example: you move the joystick to the top.
 //         event.data will contain the value '100.'
-typedef struct {
+// - next: for internal use only
+struct {
 	short type;
 	int data;
+	void *next;
 } event_t;
 
 // TODO: move all state information into here
@@ -90,8 +92,11 @@ typedef struct {
 //                joystick and button events on controller 1
 // - controller2: if set to 'true,' pollEvent will probe for
 //                joystick and button events on controller 2
+
 typedef struct {
-	event_t eventStack[MAX_EVENTS];
+	event_t eventPool[MAX_EVENTS];
+	event_t *first; // pointer to the current first event
+
 	bool eventNone;
 	bool controller1;
 	bool controller2;
@@ -100,7 +105,7 @@ typedef struct {
 // This is a private array needed by the pollEvent
 // cycle to keep track of button states
 bool buttonState1[13] = {
-	false, false, false,
+	true, false, false,
 	false, false, false,
 	false, false, false,
 	false, false, false,
@@ -129,73 +134,88 @@ int c2State[2][2] = {
 };
 
 void eventengine_init(eventengine_t *engine)
-// This function initializes an engine so
-// that it contains zeros instead of
-// garbage
 {
-	memset(engine, 0, sizeof(eventengine_t));
-}
+	// Zero-out all member variables of the engine
+	engine->eventNone = false;
+	engine->controller1 = false;
+	engine->controller2 = false;
 
-int eventCount(event_t *stack)
-{
-	for (int i = 0; i < 100; i++)
-	{
-		if (stack[i].type == 0
-			|| stack[i].type == EVENT_TYPE_NONE)
-		return i;
+	// Zero-out all the events in the engine
+	for (int i = 0; i < MAX_EVENTS; i++) {
+		engine->eventPool[i].type = 0;
+		engine->eventPool[i].data = 0;
+		engine->eventPool[i].next = NULL;
 	}
 
-	return MAX_EVENTS;
+	// Link the events in a chain
+	for (int i = 0; i < MAX_EVENTS - 1; i++)
+		engine->eventPool[i].next = &(engine->eventPool[i + 1]);
+
+	// Set up the pointer to the first element
+	engine->first = &(engine->eventPool[0]);
 }
 
-void pushEvent(const event_t &event, event_t *stack)
+event_t *lastEvent(eventengine_t *engine)
+// Returns the event that has no 'next' link
 {
-	int count = eventCount(stack);
-	stack[count].type = event.type;
-	stack[count].data = event.data;
-	nxtDisplayTextLine(2, "%d", stack[count].data);
+	event_t *ret = engine->first;
+	while (ret->next != 0)
+		ret = ret->next;
+	return ret;
 }
 
-void pushEvent_replace(const event_t &event, event_t *stack)
-// If the event is a joystick event, we can't just shove
-// it onto the stack; they will be produced faster than
-// they can be consumed.
-// Instead, we need to search for the last one and change
-// the data member variable
+event_t *lastUsedEvent(eventengine_t *engine)
 {
-	// Just search for the last joy event with the same type
-	int count = eventCount(stack);
-	for (int i = count - 1; i >= 0; i++)
+	event_t *ret = engine->first;
+	while (ret->type != 0)
+		ret = ret->next;
+
+	if (ret == engine->first)
 	{
-		if (stack[i].type == event.type) {
-			stack[i].data = event.data;
-			return;
-		}
+		// This means that the first event is not taken
+		return NULL;
 	}
 
-	// If we didn't find one, just push as normal
-	pushEvent(event, stack);
+	return ret;
 }
 
-// Pops from the bottom of the stack, not the top
-void popBottomEvent(const event_t *stack, event_t *retVal)
+void addEvent(eventengine_t *engine, const event_t &event)
 {
-	int count = eventCount(stack);
+	// Find the first unused event and copy values into there
+	// Note that there is no segfault guard
+	event_t *parent = lastUsedEvent(engine);
+	event_t *next = (event_t *) parent->next;
+	if (parent == NULL) // if the first event isnt taken
+		next = engine->first;
+	next->type = event.type;
+	next->data = event.data;
 
-	retVal->type = stack[0].type;
-	retVal->data = stack[0].data;
-	memset(&(stack[0]), 0, sizeof(event_t));
+	nxtDisplayTextLine(2, "add: %d", event.type);
+}
 
-	// Move the rest of the events down
-	int i = 0;
-	int j = 1;
-	while (i < count)
-	{
-		stack[i] = stack[j];
-		memset(&(stack[j]), 0, sizeof(event_t));
-		i++;
-		j++;
-	}
+void addEvent_replace(eventengine_t *engine, const event_t &event)
+{
+
+}
+
+void consumeEvent(eventengine_t *engine, event_t *ret)
+{
+
+	// Consume the event, destroying it and adding it
+	// to the recycle list
+	event_t *consumed = engine->first;
+	engine->first = consumed->next;
+
+	// Copy the values
+	ret->type = consumed->type;
+	ret->data = consumed->data;
+
+	// Blank the consumed event
+	consumed->next = NULL;
+	consumed->type = 0;
+	lastEvent(engine)->next = consumed;
+
+	nxtDisplayTextLine(3, "consume:%d", ret->type);
 }
 
 bool pollEvent(eventengine_t *engine, event_t *event)
@@ -217,58 +237,69 @@ bool pollEvent(eventengine_t *engine, event_t *event)
 {
 	// I have to do this loop because the C
 	// implementation does not allow recursion
-	while (true) {
+	while (true)
+	{
 		bool foundEvent = false;
 		event_t newEvent; // temp event to be copied onto the stack
 
-		if (engine->controller1) {
+		if (engine->controller1)
+		{
 			for (int i = 0; i < sizeof(buttonState1) / sizeof(bool); i++)
-				// Button press checking here
-			// TODO: Do I need to shift each button code +1?
 			{
-				if (joy1Btn(i)) {
-					if (!buttonState1[i]) {
+				// Button press checking here
+				// TODO: Do I need to shift each button code +1?
+				if (joy1Btn(i))
+				{
+					if (!buttonState1[i])
+					{
 						buttonState1[i] = true;
 						newEvent.type = EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN;
 						newEvent.data = i;
 						foundEvent = true;
-						pushEvent(newEvent, engine->eventStack);
-
+						addEvent(engine, newEvent);
 					}
-					} else {
-					if (buttonState1[i]) {
+				}
+				else
+				{
+					if (buttonState1[i])
+					{
 						buttonState1[i] = false;
 						newEvent.type = EVENT_TYPE_CONTROLLER_1_BUTTON_UP;
 						newEvent.data = i;
 						foundEvent = true;
-						pushEvent(newEvent, engine->eventStack);
-
+						addEvent(engine, newEvent);
 					}
 				}
 			}
 		}
 
-		if (engine->controller2) {
+		if (engine->controller2)
+		{
 			for (int i = 0; i < sizeof(buttonState2) / sizeof(bool); i++)
-			// Button press checking here
+				// Button press checking here
 			// TODO: Do I need to shift each button code +1?
 			{
-				if (joy2Btn(i)) {
-					if (!buttonState2[i]) {
+				if (joy2Btn(i))
+				{
+					if (!buttonState2[i])
+					{
 						buttonState2[i] = true;
 						newEvent.type = EVENT_TYPE_CONTROLLER_2_BUTTON_DOWN;
 						newEvent.data = i;
 						foundEvent = true;
-						pushEvent(newEvent, engine->eventStack);
+						addEvent(engine, newEvent);
 
 					}
-					} else {
-					if (buttonState2[i]) {
+				}
+				else
+				{
+					if (buttonState2[i])
+					{
 						buttonState2[i] = false;
 						newEvent.type = EVENT_TYPE_CONTROLLER_2_BUTTON_UP;
 						newEvent.data = i;
 						foundEvent = true;
-						pushEvent(newEvent, engine->eventStack);
+						addEvent(engine, newEvent);
 
 					}
 				}
@@ -278,7 +309,7 @@ bool pollEvent(eventengine_t *engine, event_t *event)
 		// Joystick events
 		{
 			// [joystick][axis]
-		  // set to '1' so I can debug it
+			// set to '1' so I can debug it
 			int c1Now[2][2] = { 0, 0, 0, 0 };
 			int c2Now[2][2] = { 0, 0, 0, 0 };
 
@@ -310,21 +341,21 @@ bool pollEvent(eventengine_t *engine, event_t *event)
 						if (joy == 0) {
 							if (axis == 0) {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_X;
-							} else {
+								} else {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_1_CHANGE_Y;
 							}
 						}
 						else { // (joy == 1)
 							if (axis == 0) {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_X;
-							} else {
+								} else {
 								newEvent.type = EVENT_TYPE_CONTROLLER_1_JOYSTICK_2_CHANGE_Y;
 							}
 						}
 
 						c1State[joy][axis] = c1Now[joy][axis];
 						newEvent.data = c1Now[joy][axis];
-						pushEvent_replace(newEvent, engine->eventStack);
+						addEvent_replace(engine, newEvent);
 					}
 				}
 			}
@@ -353,14 +384,14 @@ bool pollEvent(eventengine_t *engine, event_t *event)
 
 					c2State[joy][axis] = c2Now[joy][axis];
 					newEvent.data = c2Now[joy][axis];
-					pushEvent_replace(newEvent, engine->eventStack);
+					addEvent_replace(engine, newEvent);
 				}
 			}
 		}
 
 		if (foundEvent) {
 			// Find the last event on the stack and return it
-			popBottomEvent(engine->eventStack, event);
+			consumeEvent(engine, event);
 			return true;
 			} else {
 			if (engine->eventNone) {
