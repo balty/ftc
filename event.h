@@ -88,15 +88,19 @@ struct {
 //              for another event to occur if it could not
 //              find one; it will simply return an empty
 //              event.
+// - joysticks: if set to 'true,' pollEvent will probe for
+//              joystick events on the given controllers.
+//              see controller1 & controller2
 // - controller1: if set to 'true,' pollEvent will probe for
-//                joystick and button events on controller 1
+//                button events on controller 1
 // - controller2: if set to 'true,' pollEvent will probe for
-//                joystick and button events on controller 2
+//                button events on controller 2
 typedef struct {
 	event_t eventPool[MAX_EVENTS];
 	event_t *first; // pointer to the current first event
 
 	bool eventNone;
+	bool joysticks;
 	bool controller1;
 	bool controller2;
 } eventengine_t;
@@ -367,6 +371,7 @@ void pollEvent(eventengine_t *engine, event_t *event)
 		}
 
 		// Joystick events
+		if (joysticks)
 		{
 			// [joystick][axis]
 			// set to '1' so I can debug it
