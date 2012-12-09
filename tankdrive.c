@@ -30,24 +30,49 @@ task main()
 	engine.controller2 = false;
 
 	int controllerPov;
+	int conveyorSpeed = 0;
 
 	while (true)
 	{
-		motor[arm] = 40;
 		// Set wheel speeds
-		motor[leftWheels] = controllerValue(1, 1, 2);
-		motor[rightWheels] = controllerValue(1, 2, 2);
+		motor[leftWheels] = (float) controllerValue(1, 1, 2) * .6;
+		motor[rightWheels] = (float) controllerValue(1, 2, 2) * .6;
 
 		// Move arm up/down
 		controllerPov = joystick.joy1_TopHat;
 		nxtDisplayTextLine(0, "%d", controllerPov);
-		/*if (controllerPov == DPAD_UP)
+		if (controllerPov == DPAD_UP)
 		{
-			motor[arm] = 40;
+			motor[arm] = 30;
 			PlaySound(soundBlip);
 		}
 		else if (controllerPov == DPAD_DOWN)
-			motor[arm] = -40;*/
+		{
+			motor[arm] = -30;
+		}
+		else
+		{
+			motor[arm] = 0;
+		}
+
+		// Conveyor claw controlls
+		pollEvent(&engine, &event);
+		switch (event.type)
+		{
+		case EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN:
+			if (event.data == CONTROLLER_L1)
+				conveyorSpeed = 100;
+			else if (event.data == CONTROLLER_R1)
+				conveyorSpeed = -100;
+			break;
+		case EVENT_TYPE_CONTROLLER_1_BUTTON_UP:
+			if (event.data == CONTROLLER_L1
+				|| event.data == CONTROLLER_R1)
+				conveyorSpeed = 0;
+			break;
+		}
+		motor[clawTop] = conveyorSpeed;
+		motor[clawBottom] = conveyorSpeed;
 	}
 
 }
