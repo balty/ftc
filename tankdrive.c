@@ -34,8 +34,8 @@ task main()
 	while (true)
 	{
 		// Set wheel speeds
-		motor[leftWheels] = (float) controllerValue(1, 1, 2) * .6;
-		motor[rightWheels] = (float) controllerValue(1, 2, 2) * .6;
+		motor[leftWheels] = (float) controllerValue(1, 1, 2) * .5;
+		motor[rightWheels] = (float) controllerValue(1, 2, 2) * .5;
 
 		// Move arm up/down and wrist up/down
 		controllerPov = joystick.joy1_TopHat;
