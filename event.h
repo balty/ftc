@@ -371,7 +371,7 @@ void pollEvent(eventengine_t *engine, event_t *event)
 		}
 
 		// Joystick events
-		if (joysticks)
+		if (engine->joysticks)
 		{
 			// [joystick][axis]
 			// set to '1' so I can debug it
