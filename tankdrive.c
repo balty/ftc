@@ -1,14 +1,12 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  none,     none)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Motor,  motorA,          clawTop,       tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorB,          clawBottom,    tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     leftWheels,    tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     rightWheels,   tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_1,     arm,           tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     motorG,        tmotorTetrix, openLoop)
-#pragma config(Servo,  srvo_S2_C1_1,    servo1,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_1,    wrist,                tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
@@ -31,6 +29,7 @@ task main()
 
 	int controllerPov;
 	int conveyorSpeed = 0;
+	int wristRotation = servo[wrist];
 
 	while (true)
 	{
@@ -38,24 +37,23 @@ task main()
 		motor[leftWheels] = (float) controllerValue(1, 1, 2) * .6;
 		motor[rightWheels] = (float) controllerValue(1, 2, 2) * .6;
 
-		// Move arm up/down
+		// Move arm up/down and wrist up/down
 		controllerPov = joystick.joy1_TopHat;
 		nxtDisplayTextLine(0, "%d", controllerPov);
 		if (controllerPov == DPAD_UP)
-		{
 			motor[arm] = 30;
-			PlaySound(soundBlip);
-		}
 		else if (controllerPov == DPAD_DOWN)
-		{
 			motor[arm] = -30;
-		}
 		else
-		{
 			motor[arm] = 0;
-		}
 
-		// Conveyor claw controlls
+		if (controllerPov == DPAD_LEFT)
+			wristRotation--;
+		else if (controllerPov == DPAD_RIGHT)
+			wristRotation++;
+		servo[wrist] = wristRotation;
+
+		// Conveyor claw and wrist controlls
 		pollEvent(&engine, &event);
 		switch (event.type)
 		{
