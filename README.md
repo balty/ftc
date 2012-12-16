@@ -20,3 +20,7 @@ Contributers
 [email-aj]: mailto:stubberudaj@gmail.com
 [email-connor]: mailto:connorot@gmail.com
 [email-jake]: mailto:louisol@gmail.com
+
+TODO Notes
+--------
+- When reassembling the robot, mount the NXT at the arm's vertex to minimize required wire length
