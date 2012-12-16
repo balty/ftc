@@ -31,19 +31,22 @@ task main()
 	int conveyorSpeed = 0;
 	int wristRotation = servo[wrist];
 
+	float armCoefficient = 0.3;
+
 	while (true)
 	{
 		// Set wheel speeds
 		motor[leftWheels] = (float) controllerValue(1, 1, 2) * .5;
 		motor[rightWheels] = (float) controllerValue(1, 2, 2) * .5;
 
+		// Check DPAD
 		// Move arm up/down and wrist up/down
 		controllerPov = joystick.joy1_TopHat;
 		nxtDisplayTextLine(0, "%d", controllerPov);
 		if (controllerPov == DPAD_UP)
-			motor[arm] = 30;
+			motor[arm] = (float) 100 * armCoefficient;
 		else if (controllerPov == DPAD_DOWN)
-			motor[arm] = -30;
+			motor[arm] = (float) -30 * armCoefficient;
 		else
 			motor[arm] = 0;
 
@@ -54,6 +57,7 @@ task main()
 		servo[wrist] = wristRotation;
 
 		// Conveyor claw and wrist controlls
+		// Also anything that relies on button presses
 		pollEvent(&engine, &event);
 		switch (event.type)
 		{
@@ -62,6 +66,12 @@ task main()
 				conveyorSpeed = 100;
 			else if (event.data == CONTROLLER_R1)
 				conveyorSpeed = -100;
+			else if (event.data == CONTROLLER_A) {
+				if (armCoefficient != 1.0)
+					armCoefficient = 1.0;
+				else
+					armCoefficient = 0.3;
+			}
 			break;
 		case EVENT_TYPE_CONTROLLER_1_BUTTON_UP:
 			if (event.data == CONTROLLER_L1
