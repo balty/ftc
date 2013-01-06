@@ -25,3 +25,7 @@ Contributers
 TODO Notes
 --------
 - When reassembling the robot, mount the NXT at the arm's vertex to minimize required wire length
+
+Resources
+----------
+http://rdpartyrobotcdr.sourceforge.net/documentation/group__htirs2.html
