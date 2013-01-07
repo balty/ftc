@@ -20,7 +20,7 @@
 
 #include "util.h"
 
-const int SPEED = 40;
+const int SPEED = 10;
 
 void rotateLeft()
 {
@@ -40,21 +40,31 @@ void stopRotation()
 	motor[rightWheels] = 0;
 }
 
+void forward()
+{
+	motor[leftWheels] = SPEED;
+	motor[rightWheels] = SPEED;
+
 task main()
 {
-	while (true)
+	while(true)
 	{
 		int val = SensorValue[IRSensor]
-
-		if (val == 0)
+		int val2 = SensorValue[IRSensor2]
+		float val3 = (val + val2)/2
+		if (val3 == 5)
+		{
+			forward()
+		}
+		if (val3 == 0)
 		{
 			rotateRight(); // just rotate
 		}
-		else if (val < 5)
+		else if (val3 < 5)
 		{
 			rotateLeft();
 		}
-		else if (val > 5)
+		else if (val3 > 5)
 		{
 			rotateRight();
 		}
