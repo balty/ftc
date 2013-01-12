@@ -20,22 +20,22 @@
 
 const int SPEED = 40;
 
-void forward()
+void forward(float constant = 1.0)
 {
 	motor[leftWheels] = SPEED;
 	motor[rightWheels] = SPEED;
 }
 
-void rotateLeft()
+void rotateLeft(float constant = 1.0)
 {
-	motor[leftWheels] = -SPEED;
-	motor[rightWheels] = SPEED;
+	motor[leftWheels] = (float) -SPEED * constant;
+	motor[rightWheels] = (float) SPEED * constant;
 }
 
-void rotateRight()
+void rotateRight(float constant = 1.0)
 {
-	motor[leftWheels] = SPEED;
-	motor[rightWheels] = -SPEED;
+	motor[leftWheels] = (float) SPEED * constant;
+	motor[rightWheels] = (float) -SPEED * constant;
 }
 
 void stopMovement()
@@ -74,11 +74,28 @@ task main()
 	{
 		// Step 2: rotate until on sum of 10 (IR)
 		rotateLeft();
-		while (getIRSum() != 9
-			&& getIRSum() != 10
-			&& getIRSum() != 11) {
+		while (getIRSum() != 10) {
 				;
 		}
+		nxtDisplayTextLine(0, "IR:%d", getIRSum());
 		stopMovement();
+	}
+
+	{
+		// Step 3: drive and try to stay straight
+	  // TODO: break when close enough for arm to do its stuff
+		while (true) {
+			int sum = getIRSum();
+
+			if (sum == 10) {
+				forward();
+			}
+			else if (sum < 10) {
+				rotateLeft(0.3);
+			}
+			else if (sum > 10) {
+				rotateRight(0.3);
+			}
+		}
 	}
 }
