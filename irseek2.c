@@ -18,45 +18,6 @@
 
 #include "util.h"
 
-const int SPEED = 40;
-
-void forward(float constant = 1.0)
-{
-	motor[leftWheels] = SPEED;
-	motor[rightWheels] = SPEED;
-}
-
-void rotateLeft(float constant = 1.0)
-{
-	motor[leftWheels] = (float) -SPEED * constant;
-	motor[rightWheels] = (float) SPEED * constant;
-}
-
-void rotateRight(float constant = 1.0)
-{
-	motor[leftWheels] = (float) SPEED * constant;
-	motor[rightWheels] = (float) -SPEED * constant;
-}
-
-void stopMovement()
-{
-	motor[leftWheels] = 0;
-	motor[rightWheels] = 0;
-}
-
-int getIR(int which)
-{
-	if (!which)
-		return SensorValue[IRSensor];
-	else
-		return SensorValue[IRSensor2];
-}
-
-int getIRSum()
-{
-	return getIR(0) + getIR(1);
-}
-
 task main()
 {
 	{

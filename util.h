@@ -16,6 +16,7 @@
 #define DPAD_LEFT 6
 #define DPAD_RIGHT 2
 
+#define SPEED 40
 #define SLOW_CONSTANT 0.35
 #define COLOR_BLACK 0
 
@@ -100,6 +101,63 @@ int controllerValue(int controller, int joy, int axis)
 	val = 0;
 
 	return val;
+}
+
+void forward(float coefficient = 1.0)
+// Move the robot forward
+// Parameters:
+// - coefficient: the multiplier for the speed
+{
+	motor[leftWheels] = SPEED * coefficient;
+	motor[rightWheels] = SPEED * coefficient;
+}
+
+void rotateLeft(float coefficient = 1.0)
+// Rotate the robot left
+// Parameters:
+// - coefficient: the multiplier for the speed
+{
+	motor[leftWheels] = (float) -SPEED * coefficient;
+	motor[rightWheels] = (float) SPEED * coefficient;
+}
+
+void rotateRight(float coefficient = 1.0)
+// Rotate the robot right
+// Parameters:
+// - coefficient: the multiplier for the speed
+{
+	motor[leftWheels] = (float) SPEED * coefficient;
+	motor[rightWheels] = (float) -SPEED * coefficient;
+}
+
+void stopMovement()
+// Stop the robot
+{
+	motor[leftWheels] = 0;
+	motor[rightWheels] = 0;
+}
+
+int getIR(int which)
+// Get values from the ir sensors
+// Return value:
+// - the requested zone value from the sensor
+// Parameters:
+// - which: which sensor to read from
+//          If this value is zero, it will read from the
+//          sensor labeled 'IRSensor.'
+//          Otherwise, it will read from the sensor labeled
+//          'IRSensor2.'
+{
+	if (!which)
+		return SensorValue[IRSensor];
+	else
+		return SensorValue[IRSensor2];
+}
+
+int getIRSum()
+// Get the sum of both IR sensor values
+{
+	return getIR(0) + getIR(1);
 }
 
 #endif // UTIL_H
