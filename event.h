@@ -352,7 +352,6 @@ void pollEvent(eventengine_t *engine, event_t *event)
 						newEvent.data = i;
 						foundEvent = true;
 						addEvent(engine, newEvent);
-
 					}
 				}
 				else
@@ -364,7 +363,6 @@ void pollEvent(eventengine_t *engine, event_t *event)
 						newEvent.data = i;
 						foundEvent = true;
 						addEvent(engine, newEvent);
-
 					}
 				}
 			}

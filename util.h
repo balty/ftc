@@ -61,14 +61,14 @@ int controllerValue(int controller, int joy, int axis)
 		if (joy == 1) {
 			if (axis == 1) {
 				val = joystick.joy1_x1;
-			} else {
+				} else {
 				val = joystick.joy1_y1;
 			}
 		}
 		else {
 			if (axis == 1) {
 				val = joystick.joy1_x2;
-			} else {
+				} else {
 				val = joystick.joy1_y2;
 			}
 		}
@@ -158,6 +158,34 @@ int getIRSum()
 // Get the sum of both IR sensor values
 {
 	return getIR(0) + getIR(1);
+}
+
+void unpackArm()
+// Reset encoder values, and unpack the arm
+{
+	// Start by axing values and resetting to zero
+	bFloatDuringInactiveMotorPWM = false; // the motors will NOT coast when power is not applied
+	nMotorEncoder[motorARM1] = 0; // reset the Motor Encoder of Motor ARM 1
+	nMotorEncoder[motorARM2] = 0; // reset the Motor Encoder of Motor ARM 2
+	servo[clawservo1] = 180; // set servo to zero
+	servo[clawservo2] = 180; // set servo to zero
+	wait1Msec(500);
+
+	// Set up the arm for the middle row
+	motor[motorARM1] = 100;
+	motor[motorARM2] = 100;
+	servo[clawservo1] = 110;
+	servo[clawservo2] = 110;
+	while (true) {
+		if (motor[motorARM1] == 0
+			&& motor[motorARM2] == 0)
+		break;
+
+		if (nMotorEncoder[motorARM1] >= 4700)
+			motor[motorARM1] = 0;
+		if (nMotorEncoder[motorARM2] >= 1925)
+			motor[motorARM2] = 0;
+	}
 }
 
 #endif // UTIL_H
