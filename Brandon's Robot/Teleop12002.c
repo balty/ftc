@@ -54,7 +54,7 @@ make void arm2
 */
 // Drivers -----------------------------------------------------------------------------------------------------
 #include "JoystickDriver.c"     		// Tells ROBOTC to include the driver file for the joystick.
-#include "drivers/hitechnic-irseeker-v2.h"	// ir driver
+#include "../drivers/hitechnic-irseeker-v2.h"	// ir driver
 //--------------------------------------------------------------------------------------------------------------
 const int MIN_POS_CLAW	=	0;				// Minimum servo position 	#define MIN_POS			base 0
 const int MAX_POS_CLAW	= 255;			// Maximum servo position 	#define MAX_POS			base 255
