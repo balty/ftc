@@ -19,6 +19,24 @@
 #define ARM_SPEED_LOWER 100
 #define ARM_SPEED_UPPER 50
 
+// Angle definitions, copied from Teleop12002.c
+const int SERVO_ANGLE_4 = 100;			// Servo angle for button 4 yellow 							base 100
+const int SERVO_ANGLE_1 = 130;			// Servo angle for button 1 blue								base 130
+const int SERVO_ANGLE_2 = 145;			// Servo angle for button 2 green								base 145
+const int SERVO_ANGLE_3 = 30;				// Servo angle for button 3 red									base 30
+const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
+
+const int ARM_1_COUNT_4 = 13000;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
+const int ARM_1_COUNT_1 = 4700;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
+const int ARM_1_COUNT_2 = 1000;			// arm 1 encoder for button 2 Low Rack green		base 1000
+const int ARM_1_COUNT_3 = 8000;			// arm 1 encoder for button 3 Floor red					base 8000
+const int ARM_1_COUNT_6 = 0;				// arm 1 encoder for button 3 home position			base 0
+const int ARM_2_COUNT_4 = 4500;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
+const int ARM_2_COUNT_1 = 2250;			// arm 2 encoder for button 1 Middle Rack blue	base 2250
+const int ARM_2_COUNT_2 = 1000;			// arm 2 encoder for button 2 Low Rack green		base 1000
+const int ARM_2_COUNT_3	= 7000;			// arm 2 encoder for button 3 Floor red					base 7000
+const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
+
 task main()
 {
 	eventengine_t engine;
@@ -40,10 +58,21 @@ task main()
 		int arm2_target;
 		int arm2_state;
 		int arm2_lock;
+
+		bool arm1_moved;
+		bool arm2_moved;
 	} state_t;
 	state_t state;
 
 	memset(&state, 0, sizeof(state));
+
+	// Reset servo values
+	bFloatDuringInactiveMotorPWM = false; // the motors will NOT coast when power is not applied
+	nMotorEncoder[motorARM1] = 0; // reset the Motor Encoder of Motor ARM 1
+	nMotorEncoder[motorARM2] = 0; // reset the Motor Encoder of Motor ARM 2
+	servo[clawservo1] = 180; // set servo to zero
+	servo[clawservo2] = 180; // set servo to zero
+	wait1Msec(500);
 
 	while (true)
 	{
@@ -63,18 +92,26 @@ task main()
 			{
 				state.arm1_lock = true;
 				motor[motorARM1] = ARM_SPEED_LOWER;
+				state.arm1_moved = true;
 			}
 			else if (joy1Btn(CONTROLLER_L2))
 			{
 				state.arm1_lock = true;
 				motor[motorARM1] = -ARM_SPEED_LOWER;
+				state.arm1_moved = true;
 			}
 			else
 			{
-				motor[motorARM1] = 0;
+				// Only obliderate the target/speed if we just stopped moving
+				// This way we don't keep axing the target even though we
+				// arent pressing a button
+				if (state.arm1_moved)
+				{
+					state.arm1_target = state.arm1_state;
+					motor[motorARM1] = 0;
+				}
+				state.arm1_moved = false;
 				state.arm1_lock = false;
-				state.arm1_state = nMotorEncoder[motorARM1]; // refresh state for accuracy
-				state.arm1_target = state.arm1_state;
 			}
 
 			// Upper joint controlls
@@ -82,6 +119,7 @@ task main()
 			{
 				state.arm2_lock = true;
 				motor[motorARM2] = ARM_SPEED_UPPER;
+				state.arm2_moved = true;
 			}
 			else if (joy1Btn(CONTROLLER_R2))
 			{
@@ -90,10 +128,16 @@ task main()
 			}
 			else
 			{
-				motor[motorARM2] = 0;
+				// Only obliderate the target/speed if we just stopped moving
+				// This way we don't keep axing the target even though we
+				// arent pressing a button
+				if (state.arm2_moved)
+				{
+					state.arm2_target = state.arm2_state;
+					motor[motorARM2] = 0;
+				}
+				state.arm2_moved = false;
 				state.arm2_lock = false;
-				state.arm2_state = nMotorEncoder[motorARM2]; // refresh state for accuracy
-				state.arm2_target = state.arm2_state;
 			}
 
 			// Manual servo controls
@@ -109,21 +153,41 @@ task main()
 			}
 		}
 
+		{
+			pollEvent(&engine, &event);
+			switch (event.type)
+			{
+			case EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN:
+				if (event.data == CONTROLLER_X)
+				{
+					state.arm1_lock = false;
+					state.arm2_lock = false;
+
+					state.arm1_target = ARM_1_COUNT_1;
+					state.arm2_target = ARM_2_COUNT_1;
+					servo[clawservo1] = SERVO_ANGLE_1;
+					servo[clawservo2] = SERVO_ANGLE_2;
+				}
+				break;
+			}
+		}
+
 		// Do arm movements
 		{
 			// Now set the motors to go the correct direction
 			if (!state.arm1_lock)
 			{
-				if (abs(state.arm1_target - state.arm1_state) > 50)
-					motor[motorARM1] = state.arm1_target > state.arm1_state ? 100 : -100;
+				if (abs(state.arm1_target - state.arm1_state) > 100)
+					motor[motorARM1] = state.arm1_target > state.arm1_state ? ARM_SPEED_LOWER : -ARM_SPEED_LOWER;
 				else
 					motor[motorARM1] = 0;
 			}
 
 			if (!state.arm2_lock)
 			{
-				if (abs(state.arm2_target - state.arm2_state) > 50)
-					motor[motorARM2] = state.arm2_target > state.arm1_state ? 100 : -100;
+				if (abs(state.arm2_target - state.arm2_state) > 100)
+					// Reverse motorARM2
+					motor[motorARM2] = state.arm2_target > state.arm1_state ? -ARM_SPEED_UPPER : ARM_SPEED_UPPER;
 				else
 					motor[motorARM2] = 0;
 			}
