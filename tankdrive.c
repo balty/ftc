@@ -54,7 +54,9 @@ task main()
 		// First, update states
 		state.arm1_state = nMotorEncoder[motorARM1];
 		state.arm2_state = nMotorEncoder[motorARM2];
+		controllerPov = joystick.joy1_TopHat;
 
+		// Manual joint and servo controls
 		{
 			// Lower joint controls
 			if (joy1Btn(CONTROLLER_L1))
@@ -92,6 +94,18 @@ task main()
 				state.arm2_lock = false;
 				state.arm2_state = nMotorEncoder[motorARM2]; // refresh state for accuracy
 				state.arm2_target = state.arm2_state;
+			}
+
+			// Manual servo controls
+			if (controllerPov == DPAD_UP)
+			{
+				servo[clawservo1] = ServoValue[clawservo1] + 1;
+				servo[clawservo2] = ServoValue[clawservo2] + 1;
+			}
+			else if (controllerPov == DPAD_DOWN)
+			{
+				servo[clawservo1] = ServoValue[clawservo1] - 1;
+				servo[clawservo2] = ServoValue[clawservo2] - 1;
 			}
 		}
 
