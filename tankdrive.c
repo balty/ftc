@@ -54,13 +54,13 @@ task main()
 	struct {
 		int arm1_target; // target rotation for arm1 motor
 		int arm1_state; // current rotation for arm1 motor
-		int arm1_lock; // true if we are moving the arm w/o servo's - just power
+		int arm1_manual_lock; // true if manual controls are locking movement
 		int arm2_target;
 		int arm2_state;
-		int arm2_lock;
+		int arm2_manual_lock;
 
-		bool arm1_moved;
-		bool arm2_moved;
+		bool arm1_manual_moving;
+		bool arm2_manual_moving;
 	} state_t;
 	state_t state;
 
@@ -90,107 +90,94 @@ task main()
 			// Lower joint controls
 			if (joy1Btn(CONTROLLER_L1))
 			{
-				state.arm1_lock = true;
+				state.arm1_manual_lock = true;
+				state.arm1_target = state.arm1_state;
 				motor[motorARM1] = ARM_SPEED_LOWER;
-				state.arm1_moved = true;
 			}
 			else if (joy1Btn(CONTROLLER_L2))
 			{
-				state.arm1_lock = true;
+				state.arm1_manual_lock = true;
+				state.arm1_target = state.arm1_state;
 				motor[motorARM1] = -ARM_SPEED_LOWER;
-				state.arm1_moved = true;
 			}
 			else
 			{
-				// Only obliderate the target/speed if we just stopped moving
-				// This way we don't keep axing the target even though we
-				// arent pressing a button
-				if (state.arm1_moved)
-				{
-					state.arm1_target = state.arm1_state;
+				// If it is locked, this means we can set speed to zero
+				// without disrupting auto-rotation
+				if (state.arm1_manual_lock)
 					motor[motorARM1] = 0;
-				}
-				state.arm1_moved = false;
-				state.arm1_lock = false;
+
+				// Don't disengage the lock - we don't want auto-adjust until
+				// we hit the button
 			}
 
 			// Upper joint controlls
 			if (joy1Btn(CONTROLLER_R1))
 			{
-				state.arm2_lock = true;
+				state.arm2_manual_lock = true;
+				state.arm2_target = state.arm2_state;
 				motor[motorARM2] = ARM_SPEED_UPPER;
-				state.arm2_moved = true;
 			}
 			else if (joy1Btn(CONTROLLER_R2))
 			{
-				state.arm2_lock = true;
+				state.arm2_manual_lock = true;
+				state.arm2_target = state.arm2_state;
 				motor[motorARM2] = -ARM_SPEED_UPPER;
 			}
 			else
 			{
-				// Only obliderate the target/speed if we just stopped moving
-				// This way we don't keep axing the target even though we
-				// arent pressing a button
-				if (state.arm2_moved)
-				{
-					state.arm2_target = state.arm2_state;
+				if (state.arm2_manual_lock)
 					motor[motorARM2] = 0;
-				}
-				state.arm2_moved = false;
-				state.arm2_lock = false;
 			}
 
 			// Manual servo controls
 			if (controllerPov == DPAD_UP)
 			{
-				servo[clawservo1] = ServoValue[clawservo1] + 1;
-				servo[clawservo2] = ServoValue[clawservo2] + 1;
+				servo[clawservo1] = ServoValue[clawservo1] + 2;
+				servo[clawservo2] = ServoValue[clawservo2] + 2;
 			}
 			else if (controllerPov == DPAD_DOWN)
 			{
-				servo[clawservo1] = ServoValue[clawservo1] - 1;
-				servo[clawservo2] = ServoValue[clawservo2] - 1;
+				servo[clawservo1] = ServoValue[clawservo1] - 2;
+				servo[clawservo2] = ServoValue[clawservo2] - 2;
 			}
 		}
 
+		// Button press events
+		pollEvent(&engine, &event);
+		if (event.type == EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN)
 		{
-			pollEvent(&engine, &event);
-			switch (event.type)
+			if (event.data == CONTROLLER_X)
 			{
-			case EVENT_TYPE_CONTROLLER_1_BUTTON_DOWN:
-				if (event.data == CONTROLLER_X)
-				{
-					state.arm1_lock = false;
-					state.arm2_lock = false;
+				state.arm1_target = ARM_1_COUNT_1;
+				state.arm2_target = ARM_2_COUNT_1;
 
-					state.arm1_target = ARM_1_COUNT_1;
-					state.arm2_target = ARM_2_COUNT_1;
-					servo[clawservo1] = SERVO_ANGLE_1;
-					servo[clawservo2] = SERVO_ANGLE_2;
-				}
-				break;
+				state.arm1_manual_lock = false;
+				state.arm2_manual_lock = false;
+
+				PlaySound(soundBeepBeep);
 			}
 		}
 
-		// Do arm movements
-		{
-			// Now set the motors to go the correct direction
-			if (!state.arm1_lock)
-			{
-				if (abs(state.arm1_target - state.arm1_state) > 100)
-					motor[motorARM1] = state.arm1_target > state.arm1_state ? ARM_SPEED_LOWER : -ARM_SPEED_LOWER;
-				else
-					motor[motorARM1] = 0;
-			}
+		// Refresh some values for important accuracy
+		state.arm1_state = nMotorEncoder[motorARM1];
+		state.arm2_state = nMotorEncoder[motorARM2];
 
-			if (!state.arm2_lock)
-			{
-				if (abs(state.arm2_target - state.arm2_state) > 100)
-					// Reverse motorARM2
-					motor[motorARM2] = state.arm2_target > state.arm1_state ? -ARM_SPEED_UPPER : ARM_SPEED_UPPER;
-				else
-					motor[motorARM2] = 0;
-			}
+		// Rotate to the target locations if things arent locked
+		if (!state.arm1_manual_lock)
+		{
+			if (abs(state.arm1_target - state.arm1_state) > 100)
+				motor[motorARM1] = state.arm1_target > state.arm1_state ? ARM_SPEED_LOWER : -ARM_SPEED_LOWER;
+			else
+				motor[motorARM1] = 0;
+		}
+
+		if (!state.arm2_manual_lock)
+		{
+			if (abs(state.arm2_target - state.arm1_state) > 100)
+				motor[motorARM2] = state.arm2_target > state.arm2_state ? ARM_SPEED_UPPER : -ARM_SPEED_UPPER;
+			else
+				motor[motorARM2] = 0;
 		}
 	}
 }
