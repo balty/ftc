@@ -43,6 +43,8 @@ const int ARM_2_COUNT_5 = 3983;			// arm 2 encoder for joyclick - rack sweep pos
 
 task main()
 {
+	waitForStart();
+
 	eventengine_t engine;
 	event_t event;
 	eventengine_init(&engine);
@@ -52,7 +54,7 @@ task main()
 	engine.controller1 = true;
 	engine.controller2 = false;
 
-	float driveSpeed = 0.5;
+	float driveSpeed = 1.0;
 	int controllerPov;
 
 	struct {
@@ -201,8 +203,7 @@ task main()
 				servo[clawservo1] = SERVO_ANGLE_3;
 				servo[clawservo2] = SERVO_ANGLE_3;
 			}
-			else if (event.data == CONTROLLER_JOYCLICK_LEFT
-				|| event.data == CONTROLLER_JOYCLICK_RIGHT)
+			else if (event.data == CONTROLLER_JOYCLICK_RIGHT)
 			{
 				// Sweep position
 				state.arm1_target = ARM_1_COUNT_5;
@@ -213,6 +214,10 @@ task main()
 
 				servo[clawservo1] = SERVO_ANGLE_5;
 				servo[clawservo2] = SERVO_ANGLE_5;
+			}
+			else if (event.data == CONTROLLER_JOYCLICK_LEFT)
+			{
+				driveSpeed = driveSpeed == 0.5 ? 1.0 : 0.5;
 			}
 		}
 

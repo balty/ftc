@@ -18,6 +18,7 @@
 
 task main()
 {
+	waitForStart();
 	{
 		// Step 1: drive until perpendicular
 		forward();
