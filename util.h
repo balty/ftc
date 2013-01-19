@@ -6,6 +6,8 @@
 
 #define CONTROLLER_A 02
 #define CONTROLLER_X 01
+#define CONTROLLER_B 03
+#define CONTROLLER_Y 04
 #define CONTROLLER_R1 06
 #define CONTROLLER_R2 08
 #define CONTROLLER_L1 05

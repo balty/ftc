@@ -149,13 +149,53 @@ task main()
 		{
 			if (event.data == CONTROLLER_X)
 			{
+				// Middle row
 				state.arm1_target = ARM_1_COUNT_1;
 				state.arm2_target = ARM_2_COUNT_1;
 
 				state.arm1_manual_lock = false;
 				state.arm2_manual_lock = false;
 
+				servo[clawservo1] = SERVO_ANGLE_1;
+				servo[clawservo2] = SERVO_ANGLE_1;
+
 				PlaySound(soundBeepBeep);
+			}
+			else if (event.data == CONTROLLER_A)
+			{
+				// Bottom row
+				state.arm1_target = ARM_1_COUNT_2;
+				state.arm2_target = ARM_2_COUNT_2;
+
+				state.arm1_manual_lock = false;
+				state.arm2_manual_lock = false;
+
+				servo[clawservo1] = SERVO_ANGLE_2;
+				servo[clawservo2] = SERVO_ANGLE_2;
+			}
+			else if (event.data == CONTROLLER_Y)
+			{
+				// Top row
+				state.arm1_target = ARM_1_COUNT_4;
+				state.arm2_target = ARM_2_COUNT_4;
+
+				state.arm1_manual_lock = false;
+				state.arm2_manual_lock = false;
+
+				servo[clawservo1] = SERVO_ANGLE_4;
+				servo[clawservo2] = SERVO_ANGLE_4;
+			}
+			else if (event.data == CONTROLLER_B)
+			{
+				// Pick-up position
+				state.arm1_target = ARM_1_COUNT_3;
+				state.arm2_target = ARM_2_COUNT_3;
+
+				state.arm1_manual_lock = false;
+				state.arm2_manual_lock = false;
+
+				servo[clawservo1] = SERVO_ANGLE_3;
+				servo[clawservo2] = SERVO_ANGLE_3;
 			}
 		}
 
