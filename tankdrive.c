@@ -25,17 +25,21 @@ const int SERVO_ANGLE_1 = 130;			// Servo angle for button 1 blue								base 13
 const int SERVO_ANGLE_2 = 145;			// Servo angle for button 2 green								base 145
 const int SERVO_ANGLE_3 = 30;				// Servo angle for button 3 red									base 30
 const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
+const int SERVO_ANGLE_5 = 150;				// Servo angle for sweep position
 
 const int ARM_1_COUNT_4 = 13023;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
 const int ARM_1_COUNT_1 = 4700;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
 const int ARM_1_COUNT_2 = 1000;			// arm 1 encoder for button 2 Low Rack green		base 1000
 const int ARM_1_COUNT_3 = 9053;			// arm 1 encoder for button 3 Floor red					base 8000
 const int ARM_1_COUNT_6 = 0;				// arm 1 encoder for button 3 home position			base 0
+const int ARM_1_COUNT_5 = 7979; 			// arm 1 encoder for joyclick - rack sweep position
+
 const int ARM_2_COUNT_4 = 4156;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
 const int ARM_2_COUNT_1 = 2250;			// arm 2 encoder for button 1 Middle Rack blue	base 2250
 const int ARM_2_COUNT_2 = 1000;			// arm 2 encoder for button 2 Low Rack green		base 1000
 const int ARM_2_COUNT_3	= 6511;			// arm 2 encoder for button 3 Floor red					base 7000
 const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
+const int ARM_2_COUNT_5 = 3983;			// arm 2 encoder for joyclick - rack sweep position
 
 task main()
 {
@@ -196,6 +200,19 @@ task main()
 
 				servo[clawservo1] = SERVO_ANGLE_3;
 				servo[clawservo2] = SERVO_ANGLE_3;
+			}
+			else if (event.data == CONTROLLER_JOYCLICK_LEFT
+				|| event.data == CONTROLLER_JOYCLICK_RIGHT)
+			{
+				// Sweep position
+				state.arm1_target = ARM_1_COUNT_5;
+				state.arm2_target = ARM_2_COUNT_5;
+
+				state.arm1_manual_lock = false;
+				state.arm2_manual_lock = false;
+
+				servo[clawservo1] = SERVO_ANGLE_5;
+				servo[clawservo2] = SERVO_ANGLE_5;
 			}
 		}
 
