@@ -17,7 +17,7 @@
 #include "event.h"
 
 #define ARM_SPEED_LOWER 100
-#define ARM_SPEED_UPPER 50
+#define ARM_SPEED_UPPER 30
 
 // Angle definitions, copied from Teleop12002.c
 const int SERVO_ANGLE_4 = 100;			// Servo angle for button 4 yellow 							base 100
@@ -26,15 +26,15 @@ const int SERVO_ANGLE_2 = 145;			// Servo angle for button 2 green								base 1
 const int SERVO_ANGLE_3 = 30;				// Servo angle for button 3 red									base 30
 const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
 
-const int ARM_1_COUNT_4 = 13000;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
+const int ARM_1_COUNT_4 = 13023;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
 const int ARM_1_COUNT_1 = 4700;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
 const int ARM_1_COUNT_2 = 1000;			// arm 1 encoder for button 2 Low Rack green		base 1000
-const int ARM_1_COUNT_3 = 8000;			// arm 1 encoder for button 3 Floor red					base 8000
+const int ARM_1_COUNT_3 = 9053;			// arm 1 encoder for button 3 Floor red					base 8000
 const int ARM_1_COUNT_6 = 0;				// arm 1 encoder for button 3 home position			base 0
-const int ARM_2_COUNT_4 = 4500;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
+const int ARM_2_COUNT_4 = 4156;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
 const int ARM_2_COUNT_1 = 2250;			// arm 2 encoder for button 1 Middle Rack blue	base 2250
 const int ARM_2_COUNT_2 = 1000;			// arm 2 encoder for button 2 Low Rack green		base 1000
-const int ARM_2_COUNT_3	= 7000;			// arm 2 encoder for button 3 Floor red					base 7000
+const int ARM_2_COUNT_3	= 6511;			// arm 2 encoder for button 3 Floor red					base 7000
 const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
 
 task main()
@@ -219,5 +219,10 @@ task main()
 			else
 				motor[motorARM2] = 0;
 		}
+
+		// Display encoder values on the screen
+		nxtDisplayTextLine(0, "L:%d", nMotorEncoder[motorARM1]);
+		nxtDisplayTextLine(1, "U:%d", nMotorEncoder[motorARM2]);
+		nxtDisplayTextLine(2, "S:%d", ServoValue[clawservo1]);
 	}
 }
