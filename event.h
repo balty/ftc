@@ -210,8 +210,8 @@ void addEvent_replace(eventengine_t *engine, const event_t &event)
 		ev = ev->next)
 	{
 		if (ev->type == event.type) {
-			ev->data = event.type;
-			break;
+			ev->data = event.data;
+			return;
 		}
 	}
 
