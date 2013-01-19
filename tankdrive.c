@@ -217,7 +217,7 @@ task main()
 			}
 			else if (event.data == CONTROLLER_JOYCLICK_LEFT)
 			{
-				driveSpeed = driveSpeed == 0.5 ? 1.0 : 0.5;
+				driveSpeed = driveSpeed == SLOW_CONSTANT ? 1.0 : SLOW_CONSTANT;
 			}
 		}
 
