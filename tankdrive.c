@@ -43,7 +43,7 @@ const int ARM_2_COUNT_5 = 3983;			// arm 2 encoder for joyclick - rack sweep pos
 
 task main()
 {
-	//waitForStart();
+	waitForStart();
 
 	eventengine_t engine;
 	event_t event;

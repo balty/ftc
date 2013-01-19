@@ -24,7 +24,7 @@
 #define SLOW_CONSTANT 0.35
 #define COLOR_BLACK 0
 
-#define degreesToRadians(x) (x * PI / 180)
+#define degreesToRadians(x) (x * PI / (float) 180)
 #define radiansToDegrees(x) (x * (float) 180 / PI)
 
 float angleFromGyro(tSensors sensor)
@@ -98,7 +98,12 @@ int controllerValue(int controller, int joy, int axis)
 		StopAllTasks();
 	}
 
-	val = (float) val * 100.0 / 128.0;
+	float negative;
+	float ratio;
+
+	negative = (float) val / (float) abs(val);
+	ratio = (val * val) / (127.0 * 127.0);
+	val = 100.0 * ratio * negative;
 
 	if (val > -10
 		&& val < 10)
