@@ -17,7 +17,7 @@
 #include "event.h"
 
 #define ARM_SPEED_LOWER 100
-#define ARM_SPEED_UPPER 30
+#define ARM_SPEED_UPPER 50
 
 // Angle definitions, copied from Teleop12002.c
 const int SERVO_ANGLE_4 = 100;			// Servo angle for button 4 yellow 							base 100
@@ -43,7 +43,7 @@ const int ARM_2_COUNT_5 = 3983;			// arm 2 encoder for joyclick - rack sweep pos
 
 task main()
 {
-	waitForStart();
+	//waitForStart();
 
 	eventengine_t engine;
 	event_t event;
@@ -236,7 +236,7 @@ task main()
 
 		if (!state.arm2_manual_lock)
 		{
-			if (abs(state.arm2_target - state.arm1_state) > 100)
+			if (abs(state.arm2_target - state.arm2_state) > 100)
 				motor[motorARM2] = state.arm2_target > state.arm2_state ? ARM_SPEED_UPPER : -ARM_SPEED_UPPER;
 			else
 				motor[motorARM2] = 0;
