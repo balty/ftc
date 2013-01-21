@@ -20,26 +20,26 @@
 #define ARM_SPEED_UPPER 50
 
 // Angle definitions, copied from Teleop12002.c
-const int SERVO_ANGLE_4 = 100;			// Servo angle for button 4 yellow 							base 100
+const int SERVO_ANGLE_4 = 60;			// Servo angle for button 4 yellow 							base 100
 const int SERVO_ANGLE_1 = 130;			// Servo angle for button 1 blue								base 130
-const int SERVO_ANGLE_2 = 145;			// Servo angle for button 2 green								base 145
-const int SERVO_ANGLE_3 = 30;				// Servo angle for button 3 red									base 30
+const int SERVO_ANGLE_2 = 101;			// Servo angle for button 2 green								base 145
+const int SERVO_ANGLE_3 = 52;				// Servo angle for button 3 red									base 30
 const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
-const int SERVO_ANGLE_5 = 150;				// Servo angle for sweep position
+const int SERVO_ANGLE_5 = 166;				// Servo angle for sweep position
 
-const int ARM_1_COUNT_4 = 13023;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
-const int ARM_1_COUNT_1 = 4700;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
-const int ARM_1_COUNT_2 = 1000;			// arm 1 encoder for button 2 Low Rack green		base 1000
-const int ARM_1_COUNT_3 = 9053;			// arm 1 encoder for button 3 Floor red					base 8000
+const int ARM_1_COUNT_4 = 11103;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
+const int ARM_1_COUNT_1 = 5804;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
+const int ARM_1_COUNT_2 = 340;			// arm 1 encoder for button 2 Low Rack green		base 1000
+const int ARM_1_COUNT_3 = 9021;			// arm 1 encoder for button 3 Floor red					base 8000
 const int ARM_1_COUNT_6 = 0;				// arm 1 encoder for button 3 home position			base 0
-const int ARM_1_COUNT_5 = 7979; 			// arm 1 encoder for joyclick - rack sweep position
+const int ARM_1_COUNT_5 = 7591; 			// arm 1 encoder for joyclick - rack sweep position
 
-const int ARM_2_COUNT_4 = 4156;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
-const int ARM_2_COUNT_1 = 2250;			// arm 2 encoder for button 1 Middle Rack blue	base 2250
-const int ARM_2_COUNT_2 = 1000;			// arm 2 encoder for button 2 Low Rack green		base 1000
-const int ARM_2_COUNT_3	= 6511;			// arm 2 encoder for button 3 Floor red					base 7000
+const int ARM_2_COUNT_4 = 4190;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
+const int ARM_2_COUNT_1 = 2362;			// arm 2 encoder for button 1 Middle Rack blue	base 2250
+const int ARM_2_COUNT_2 = 1434;			// arm 2 encoder for button 2 Low Rack green		base 1000
+const int ARM_2_COUNT_3	= 6438;			// arm 2 encoder for button 3 Floor red					base 7000
 const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
-const int ARM_2_COUNT_5 = 3983;			// arm 2 encoder for joyclick - rack sweep position
+const int ARM_2_COUNT_5 = 4017;			// arm 2 encoder for joyclick - rack sweep position
 
 task main()
 {
