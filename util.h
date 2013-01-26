@@ -146,12 +146,6 @@ void stopMovement()
 	motor[rightWheels] = 0;
 }
 
-int getIRSum()
-// Get the sum of both IR sensor values
-{
-	return getIR(0) + getIR(1);
-}
-
 void unpackArm()
 // Reset encoder values, and unpack the arm
 {
