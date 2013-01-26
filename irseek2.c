@@ -18,7 +18,7 @@
 
 task main()
 {
-	waitForStart();
+	///waitForStart();
 	{
 		// Step 1: drive until perpendicular
 		forward();
@@ -29,13 +29,13 @@ task main()
 		}
 		stopMovement();
 		forward(-1.0);
-		wait1Msec(100);
+		wait1Msec(400);
 		stopMovement();
 	}
 
 	{
 		// Step 2: rotate until on sum of 10 (IR)
-		rotateLeft();
+		rotateLeft(0.5);
 		while (getIRSum() != 10) {
 				;
 		}
@@ -52,13 +52,13 @@ task main()
 			int sum = getIRSum();
 
 			if (sum == 10) {
-				forward();
+				forward(0.45);
 			}
 			else if (sum < 10) {
-				rotateLeft(0.3);
+				rotateLeft(0.5);
 			}
 			else if (sum > 10) {
-				rotateRight(0.3);
+				rotateRight(0.5);
 			}
 		}
 	}
