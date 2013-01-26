@@ -20,7 +20,7 @@
 #define DPAD_LEFT 6
 #define DPAD_RIGHT 2
 
-#define SPEED 40
+#define SPEED 100
 #define SLOW_CONSTANT 0.35
 #define COLOR_BLACK 0
 
@@ -183,16 +183,16 @@ void unpackArm()
 	// Set up the arm for the middle row
 	motor[motorARM1] = 100;
 	motor[motorARM2] = 100;
-	servo[clawservo1] = 110;
-	servo[clawservo2] = 110;
+	servo[clawservo1] = 78;
+	servo[clawservo2] = 78;
 	while (true) {
 		if (motor[motorARM1] == 0
 			&& motor[motorARM2] == 0)
 		break;
 
-		if (nMotorEncoder[motorARM1] >= 4700)
+		if (nMotorEncoder[motorARM1] >= 5881)
 			motor[motorARM1] = 0;
-		if (nMotorEncoder[motorARM2] >= 1925)
+		if (nMotorEncoder[motorARM2] >= 3108)
 			motor[motorARM2] = 0;
 	}
 }
