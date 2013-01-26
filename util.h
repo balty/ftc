@@ -146,23 +146,6 @@ void stopMovement()
 	motor[rightWheels] = 0;
 }
 
-int getIR(int which)
-// Get values from the ir sensors
-// Return value:
-// - the requested zone value from the sensor
-// Parameters:
-// - which: which sensor to read from
-//          If this value is zero, it will read from the
-//          sensor labeled 'IRSensor.'
-//          Otherwise, it will read from the sensor labeled
-//          'IRSensor2.'
-{
-	if (!which)
-		return SensorValue[IRSensor];
-	else
-		return SensorValue[IRSensor2];
-}
-
 int getIRSum()
 // Get the sum of both IR sensor values
 {
