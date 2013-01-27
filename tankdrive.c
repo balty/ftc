@@ -41,9 +41,13 @@ const int ARM_2_COUNT_3	= 6438;			// arm 2 encoder for button 3 Floor red					ba
 const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
 const int ARM_2_COUNT_5 = 4017;			// arm 2 encoder for joyclick - rack sweep position
 
+task safeGuard();
+
 task main()
 {
 	waitForStart();
+
+	StartTask(safeGuard);
 
 	eventengine_t engine;
 	event_t event;
@@ -246,5 +250,19 @@ task main()
 		nxtDisplayTextLine(0, "L:%d", nMotorEncoder[motorARM1]);
 		nxtDisplayTextLine(1, "U:%d", nMotorEncoder[motorARM2]);
 		nxtDisplayTextLine(2, "S:%d", ServoValue[clawservo1]);
+	}
+}
+
+task safeGuard()
+{
+	while (true) {
+		if (nMotorEncoder[motorARM1] >= 13171)
+		{
+			StopTask(main);
+			motor[motorARM1] = 0;
+			motor[motorARM2] = 0;
+			PlaySound(soundException);
+			StopAllTasks();
+		}
 	}
 }
