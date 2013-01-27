@@ -159,7 +159,7 @@ void unpackArm()
 
 	// Set up the arm for the middle row
 	motor[motorARM1] = 100;
-	motor[motorARM2] = 100;
+	motor[motorARM2] = 50;
 	servo[clawservo1] = 78;
 	servo[clawservo2] = 78;
 	while (true) {
