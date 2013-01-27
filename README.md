@@ -3,6 +3,8 @@ First Robitics Code Repository
 Branches
 --------
 - master: contains the mainline development code (usually stable)
+- event-driver: [MERGED] contains the transition code to an event-driven paradigm.  This will help us write maintainable code and develop autonomous code on top of a state machine. (unstable)
+- newbot-conversion: [MERGED] branch for porting all code over to the final bot design (unstable)
 
 Tags
 --------
@@ -13,6 +15,7 @@ Tags
 
 Contributers
 -------------
+
 - AJ Stubberud - [email][email-aj]
 - Connor O'Toole - [email][email-connor]
 - Jake Lee - [email][email-jake]
