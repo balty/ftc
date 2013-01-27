@@ -143,13 +143,13 @@ task main()
 			// Manual servo controls
 			if (controllerPov == DPAD_UP)
 			{
-				servo[clawservo1] = ServoValue[clawservo1] + 2;
-				servo[clawservo2] = ServoValue[clawservo2] + 2;
+				servo[clawservo1] = ServoValue[clawservo1] - 2;
+				servo[clawservo2] = ServoValue[clawservo2] - 2;
 			}
 			else if (controllerPov == DPAD_DOWN)
 			{
-				servo[clawservo1] = ServoValue[clawservo1] - 2;
-				servo[clawservo2] = ServoValue[clawservo2] - 2;
+				servo[clawservo1] = ServoValue[clawservo1] + 2;
+				servo[clawservo2] = ServoValue[clawservo2] + 2;
 			}
 		}
 
