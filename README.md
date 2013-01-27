@@ -4,7 +4,7 @@ Branches
 --------
 - master: contains the mainline development code (usually stable)
 - event-driver: [MERGED] contains the transition code to an event-driven paradigm.  This will help us write maintainable code and develop autonomous code on top of a state machine. (unstable)
-- newbot-conversion: [MERGED] branch for porting all code over to the final bot design (unstable)
+- gyro-autonomous: contains the transition code to an autonomous strategy where we use the gyro sensor.
 
 Tags
 --------
