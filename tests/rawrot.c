@@ -16,7 +16,8 @@
 
 task main()
 {
-	rotateLeft();
-	wait1Msec(843);
+	//rotateLeft(.75);
+	motor[rightWheels] = 75;
+	wait1Msec(5000);
 	stopMovement();
 }
