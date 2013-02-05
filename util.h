@@ -20,7 +20,7 @@
 #define DPAD_LEFT 6
 #define DPAD_RIGHT 2
 
-#define SPEED 40
+#define SPEED 100
 #define SLOW_CONSTANT 0.35
 #define COLOR_BLACK 0
 
@@ -136,7 +136,7 @@ void rotateRight(float coefficient = 1.0)
 // - coefficient: the multiplier for the speed
 {
 	motor[leftWheels] = (float) SPEED * coefficient;
-	motor[rightWheels] = (float) -SPEED * coefficient;
+	motor[rightWheels] = (float) -1.0 * (float) SPEED * coefficient;
 }
 
 void stopMovement()
@@ -144,29 +144,6 @@ void stopMovement()
 {
 	motor[leftWheels] = 0;
 	motor[rightWheels] = 0;
-}
-
-int getIR(int which)
-// Get values from the ir sensors
-// Return value:
-// - the requested zone value from the sensor
-// Parameters:
-// - which: which sensor to read from
-//          If this value is zero, it will read from the
-//          sensor labeled 'IRSensor.'
-//          Otherwise, it will read from the sensor labeled
-//          'IRSensor2.'
-{
-	if (!which)
-		return SensorValue[IRSensor];
-	else
-		return SensorValue[IRSensor2];
-}
-
-int getIRSum()
-// Get the sum of both IR sensor values
-{
-	return getIR(0) + getIR(1);
 }
 
 void unpackArm()
@@ -181,18 +158,18 @@ void unpackArm()
 	wait1Msec(500);
 
 	// Set up the arm for the middle row
-	motor[motorARM1] = 100;
-	motor[motorARM2] = 100;
-	servo[clawservo1] = 110;
-	servo[clawservo2] = 110;
+	motor[motorARM1] = 50;
+	motor[motorARM2] = 25;
+	servo[clawservo1] = 75;
+	servo[clawservo2] = 75;
 	while (true) {
 		if (motor[motorARM1] == 0
 			&& motor[motorARM2] == 0)
 		break;
 
-		if (nMotorEncoder[motorARM1] >= 4700)
+		if (nMotorEncoder[motorARM1] >= 5850)
 			motor[motorARM1] = 0;
-		if (nMotorEncoder[motorARM2] >= 1925)
+		if (nMotorEncoder[motorARM2] >= 3108)
 			motor[motorARM2] = 0;
 	}
 }
