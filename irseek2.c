@@ -28,19 +28,20 @@ task main()
 {
 	// Drive forward until we are perpendicular
 	// TODO: check to see if this works on both sides (may not)
-	forward(.5);
+	forward(.3);
 	while (SensorValue[IRSensor] != 2
 		&& SensorValue[IRSensor] != 8)
 		;
+	wait1Msec(500);
 	stopMovement();
-	wait1Msec(1000);
+	wait1Msec(1350);
 
 	float heading = 0;
 	float rotSpeed = 0;
 
 	HTGYROstartCal(gyro);
 
-	rotateLeft(.5);
+	rotateLeft(.45);
 	time1[T1] = 0;
 	while (true)
 	{
@@ -59,5 +60,44 @@ task main()
 
 	unpackArm();
 	forward(.5);
-	wait1Msec(2500);
+	wait1Msec(1000);
+	stopMovement();
+	wait1Msec(1000);
+	forward(-0.25);
+	wait1Msec(500);
+	stopMovement();
+	motor[motorARM1] = -70;
+	wait1Msec(1450);
+	motor[motorARM1] = 0;
+	forward(-0.5);
+	wait1Msec(1000);
+	stopMovement();
+
+	motor[motorARM1] = -50;
+	motor[motorARM2] = -50;
+	servo[clawservo1] = 166;
+	servo[clawservo2] = 166;
+	while (true) {
+		if (motor[motorARM1] == 0
+			&& motor[motorARM2] == 0)
+		break;
+
+		if (nMotorEncoder[motorARM1] <= 10)
+			motor[motorARM1] = 0;
+		if (nMotorEncoder[motorARM2] <= 10)
+			motor[motorARM2] = 0;
+	}
+
+	motor[motorARM1] = 50;
+	motor[motorARM2] = 50;
+	while (true) {
+		if (motor[motorARM1] == 0
+			&& motor[motorARM2] == 0)
+		break;
+
+		if (nMotorEncoder[motorARM1] >= 7400)
+			motor[motorARM1] = 0;
+		if (nMotorEncoder[motorARM2] >= 4017)
+			motor[motorARM2] = 0;
+	}
 }
