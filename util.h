@@ -136,7 +136,7 @@ void rotateRight(float coefficient = 1.0)
 // - coefficient: the multiplier for the speed
 {
 	motor[leftWheels] = (float) SPEED * coefficient;
-	motor[rightWheels] = (float) -SPEED * coefficient;
+	motor[rightWheels] = (float) -1.0 * (float) SPEED * coefficient;
 }
 
 void stopMovement()
@@ -158,16 +158,16 @@ void unpackArm()
 	wait1Msec(500);
 
 	// Set up the arm for the middle row
-	motor[motorARM1] = 100;
-	motor[motorARM2] = 50;
-	servo[clawservo1] = 78;
-	servo[clawservo2] = 78;
+	motor[motorARM1] = 50;
+	motor[motorARM2] = 25;
+	servo[clawservo1] = 75;
+	servo[clawservo2] = 75;
 	while (true) {
 		if (motor[motorARM1] == 0
 			&& motor[motorARM2] == 0)
 		break;
 
-		if (nMotorEncoder[motorARM1] >= 5881)
+		if (nMotorEncoder[motorARM1] >= 5850)
 			motor[motorARM1] = 0;
 		if (nMotorEncoder[motorARM2] >= 3108)
 			motor[motorARM2] = 0;
