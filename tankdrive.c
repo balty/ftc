@@ -23,14 +23,14 @@
 const int SERVO_ANGLE_4 = 60;			// Servo angle for button 4 yellow 							base 100
 const int SERVO_ANGLE_1 = 130;			// Servo angle for button 1 blue								base 130
 const int SERVO_ANGLE_2 = 101;			// Servo angle for button 2 green								base 145
-const int SERVO_ANGLE_3 = 52;				// Servo angle for button 3 red									base 30
+const int SERVO_ANGLE_3 = 62;				// Servo angle for button 3 red									base 30
 const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
 const int SERVO_ANGLE_5 = 166;				// Servo angle for sweep position
 
 const int ARM_1_COUNT_4 = 11103;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
 const int ARM_1_COUNT_1 = 5804;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
 const int ARM_1_COUNT_2 = 340;			// arm 1 encoder for button 2 Low Rack green		base 1000
-const int ARM_1_COUNT_3 = 9021;			// arm 1 encoder for button 3 Floor red					base 8000
+const int ARM_1_COUNT_3 = 8461;			// arm 1 encoder for button 3 Floor red					base 8000
 const int ARM_1_COUNT_6 = 0;				// arm 1 encoder for button 3 home position			base 0
 const int ARM_1_COUNT_5 = 7591; 			// arm 1 encoder for joyclick - rack sweep position
 
