@@ -27,7 +27,7 @@ const int SERVO_ANGLE_3 = 60;				// Servo angle for button 3 red									base 30
 const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
 const int SERVO_ANGLE_5 = 168;				// Servo angle for sweep position
 
-const int ARM_1_COUNT_4 = 11481;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
+const int ARM_1_COUNT_4 = 11215;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
 const int ARM_1_COUNT_1 = 5804;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
 const int ARM_1_COUNT_2 = 340;			// arm 1 encoder for button 2 Low Rack green		base 1000
 const int ARM_1_COUNT_3 = 9357;			// arm 1 encoder for button 3 Floor red					base 8000
@@ -82,6 +82,7 @@ task main()
 	nMotorEncoder[motorARM2] = 0; // reset the Motor Encoder of Motor ARM 2
 	servo[clawservo1] = 180; // set servo to zero
 	servo[clawservo2] = 180; // set servo to zero
+	servo[sweeper] = 0;
 	wait1Msec(500);
 
 	while (true)
