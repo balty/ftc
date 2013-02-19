@@ -20,26 +20,26 @@
 #define ARM_SPEED_UPPER 50
 
 // Angle definitions, copied from Teleop12002.c
-const int SERVO_ANGLE_4 = 60;			// Servo angle for button 4 yellow 							base 100
+const int SERVO_ANGLE_4 = 76;			// Servo angle for button 4 yellow 							base 100
 const int SERVO_ANGLE_1 = 130;			// Servo angle for button 1 blue								base 130
 const int SERVO_ANGLE_2 = 101;			// Servo angle for button 2 green								base 145
-const int SERVO_ANGLE_3 = 62;				// Servo angle for button 3 red									base 30
+const int SERVO_ANGLE_3 = 60;				// Servo angle for button 3 red									base 30
 const int SERVO_ANGLE_6 = 225;			// Servo angle for home position								base 225
-const int SERVO_ANGLE_5 = 166;				// Servo angle for sweep position
+const int SERVO_ANGLE_5 = 168;				// Servo angle for sweep position
 
-const int ARM_1_COUNT_4 = 11103;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
+const int ARM_1_COUNT_4 = 11481;		// arm 1 encoder for button 4 Top Rack yellow		base 13000
 const int ARM_1_COUNT_1 = 5804;			// arm 1 encoder for button 1 Middle Rack blue	base 4700
 const int ARM_1_COUNT_2 = 340;			// arm 1 encoder for button 2 Low Rack green		base 1000
-const int ARM_1_COUNT_3 = 8461;			// arm 1 encoder for button 3 Floor red					base 8000
+const int ARM_1_COUNT_3 = 9357;			// arm 1 encoder for button 3 Floor red					base 8000
 const int ARM_1_COUNT_6 = 0;				// arm 1 encoder for button 3 home position			base 0
-const int ARM_1_COUNT_5 = 7591; 			// arm 1 encoder for joyclick - rack sweep position
+const int ARM_1_COUNT_5 = 8976; 			// arm 1 encoder for joyclick - rack sweep position
 
-const int ARM_2_COUNT_4 = 4190;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
+const int ARM_2_COUNT_4 = 4115;			// arm 2 encoder for button 4 Top Rack yellow		base 4500
 const int ARM_2_COUNT_1 = 2362;			// arm 2 encoder for button 1 Middle Rack blue	base 2250
 const int ARM_2_COUNT_2 = 1434;			// arm 2 encoder for button 2 Low Rack green		base 1000
-const int ARM_2_COUNT_3	= 6438;			// arm 2 encoder for button 3 Floor red					base 7000
+const int ARM_2_COUNT_3	= 6227;			// arm 2 encoder for button 3 Floor red					base 7000
 const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
-const int ARM_2_COUNT_5 = 4017;			// arm 2 encoder for joyclick - rack sweep position
+const int ARM_2_COUNT_5 = 4279;			// arm 2 encoder for joyclick - rack sweep position
 
 task safeGuard();
 
@@ -143,13 +143,13 @@ task main()
 			// Manual servo controls
 			if (controllerPov == DPAD_UP)
 			{
-				servo[clawservo1] = ServoValue[clawservo1] - 1;
-				servo[clawservo2] = ServoValue[clawservo2] - 1;
+				servo[clawservo1] = ServoValue[clawservo1] - 2;
+				servo[clawservo2] = ServoValue[clawservo2] - 2;
 			}
 			else if (controllerPov == DPAD_DOWN)
 			{
-				servo[clawservo1] = ServoValue[clawservo1] + 1;
-				servo[clawservo2] = ServoValue[clawservo2] + 1;
+				servo[clawservo1] = ServoValue[clawservo1] + 2;
+				servo[clawservo2] = ServoValue[clawservo2] + 2;
 			}
 		}
 
