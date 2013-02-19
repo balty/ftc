@@ -8,7 +8,7 @@
 #pragma config(Motor,  mtr_S1_C2_2,     motorARM2,     tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Servo,  srvo_S1_C3_1,    clawservo1,           tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_2,    clawservo2,           tServoStandard)
-#pragma config(Servo,  srvo_S1_C3_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S1_C3_3,    sweeper,              tServoNone)
 #pragma config(Servo,  srvo_S1_C3_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
@@ -47,7 +47,7 @@ task main()
 {
 	waitForStart();
 
-	//StartTask(safeGuard);
+	StartTask(safeGuard);
 
 	eventengine_t engine;
 	event_t event;
@@ -151,6 +151,14 @@ task main()
 				servo[clawservo1] = ServoValue[clawservo1] + 2;
 				servo[clawservo2] = ServoValue[clawservo2] + 2;
 			}
+			else if (controllerPov == DPAD_LEFT)
+			{
+				servo[sweeper] = ServoValue[sweeper] + 3;
+			}
+			else if (controllerPov == DPAD_RIGHT)
+			{
+				servo[sweeper] = ServoValue[sweeper] - 3;
+			}
 		}
 
 		// Button press events
@@ -250,6 +258,7 @@ task main()
 		nxtDisplayTextLine(0, "L:%d", nMotorEncoder[motorARM1]);
 		nxtDisplayTextLine(1, "U:%d", nMotorEncoder[motorARM2]);
 		nxtDisplayTextLine(2, "S:%d", ServoValue[clawservo1]);
+		nxtDisplayTextLine(3, "S2:%d", ServoValue[sweeper]);
 	}
 }
 
