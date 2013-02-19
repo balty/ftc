@@ -20,6 +20,8 @@ task main()
 	//waitForStart();
 
 	servo[sweeper] = 169;
+	servo[clawservo1] = 210;
+	servo[clawservo2] = 210;
 	wait1Msec(1000);
 
 	forward(.6);
@@ -28,4 +30,28 @@ task main()
 
 	servo[sweeper] = 0;
 	wait1Msec(1000);
+
+	rotateRight();
+	wait1Msec(300);
+	forward();
+	wait1Msec(300);
+	rotateLeft();
+	wait1Msec(300);
+	forward();
+	wait1Msec(1400);
+	rotateLeft();
+	wait1Msec(300);
+	forward();
+	wait1Msec(300);
+	stopMovement();
+
+	forward(.5);
+	wait1Msec(500);
+	while (true)
+	{
+		forward(-0.5);
+		wait1Msec(1000);
+		forward(0.55);
+		wait1Msec(1000);
+	}
 }
