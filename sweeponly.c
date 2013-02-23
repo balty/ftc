@@ -17,7 +17,7 @@
 
 task main()
 {
-	//waitForStart();
+	waitForStart();
 
 	servo[sweeper] = 169;
 	wait1Msec(1000);

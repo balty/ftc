@@ -17,7 +17,7 @@
 
 task main()
 {
-	//waitForStart();
+	waitForStart();
 
 	forward();
 	wait1Msec(1600);

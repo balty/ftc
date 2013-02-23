@@ -17,7 +17,7 @@
 
 task main()
 {
-	//waitForStart();
+	waitForStart();
 
 	servo[sweeper] = 169;
 	servo[clawservo1] = 240;
