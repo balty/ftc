@@ -8,7 +8,7 @@
 #pragma config(Motor,  mtr_S1_C2_2,     motorARM2,     tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Servo,  srvo_S1_C3_1,    clawservo1,           tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_2,    clawservo2,           tServoStandard)
-#pragma config(Servo,  srvo_S1_C3_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S1_C3_3,    sweeper,              tServoNone)
 #pragma config(Servo,  srvo_S1_C3_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
@@ -19,15 +19,29 @@ task main()
 {
 	//waitForStart();
 
-	forward();
-	wait1Msec(1600);
+	servo[sweeper] = 169;
+	servo[clawservo1] = 240;
+	servo[clawservo2] = 240;
+	wait1Msec(1000);
+
+	forward(.6);
+	wait1Msec(600);
+	stopMovement();
+
+	servo[sweeper] = 0;
+	wait1Msec(1000);
+
 	rotateLeft();
 	wait1Msec(400);
 	forward();
+	wait1Msec(1900);
+	rotateRight();
 	wait1Msec(700);
+	forward();
+	wait1Msec(950);
 	stopMovement();
 
-	/*forward(.5);
+	forward(.5);
 	wait1Msec(500);
 	while (true)
 	{
@@ -35,5 +49,5 @@ task main()
 		wait1Msec(1000);
 		forward(0.65);
 		wait1Msec(1000);
-	}*/
+	}
 }
