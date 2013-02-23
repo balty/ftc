@@ -41,6 +41,19 @@ const int ARM_2_COUNT_3	= 6227;			// arm 2 encoder for button 3 Floor red					ba
 const int ARM_2_COUNT_6	= 0;				// arm 2 encoder for button 6 home position			base 0
 const int ARM_2_COUNT_5 = 4279;			// arm 2 encoder for joyclick - rack sweep position
 
+struct {
+		int arm1_target; // target rotation for arm1 motor
+		int arm1_state; // current rotation for arm1 motor
+		int arm1_manual_lock; // true if manual controls are locking movement
+		int arm2_target;
+		int arm2_state;
+		int arm2_manual_lock;
+
+		bool arm1_manual_moving;
+		bool arm2_manual_moving;
+	} state_t;
+state_t state;
+
 task safeGuard();
 
 task main()
@@ -60,19 +73,6 @@ task main()
 
 	float driveSpeed = 1.0;
 	int controllerPov;
-
-	struct {
-		int arm1_target; // target rotation for arm1 motor
-		int arm1_state; // current rotation for arm1 motor
-		int arm1_manual_lock; // true if manual controls are locking movement
-		int arm2_target;
-		int arm2_state;
-		int arm2_manual_lock;
-
-		bool arm1_manual_moving;
-		bool arm2_manual_moving;
-	} state_t;
-	state_t state;
 
 	memset(&state, 0, sizeof(state));
 
@@ -268,11 +268,8 @@ task safeGuard()
 	while (true) {
 		if (nMotorEncoder[motorARM1] >= 13171)
 		{
-			StopTask(main);
-			motor[motorARM1] = 0;
-			motor[motorARM2] = 0;
-			PlaySound(soundException);
-			StopAllTasks();
+			motor[motorARM1] = -40;
+			state.arm1_manual_lock = true;
 		}
 	}
 }
