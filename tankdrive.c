@@ -54,6 +54,7 @@ struct {
 	} state_t;
 state_t state;
 
+const int GUARD_UPDATE_TIME = 20;
 task safeGuard();
 
 task main()
@@ -271,5 +272,8 @@ task safeGuard()
 			motor[motorARM1] = -40;
 			state.arm1_manual_lock = true;
 		}
+
+		/* Give processor time to other tasks */
+		wait1Msec(GUARD_UPDATE_TIME);
 	}
 }
