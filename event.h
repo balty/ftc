@@ -69,7 +69,9 @@ enum {
 // - data: the value associated with the event.
 //         Example: you move the joystick to the top.
 //         event.data will contain the value '100.'
-// - next: for internal use only
+// - next: for internal use only; because of the 
+//         of dynamic memory allocation, linked
+//         lists are used
 struct {
 	short type;
 	int data;
